@@ -1,4 +1,4 @@
-#src/main/resources/application*
+src/main/resources/application*
 .env
 .docker/
 my.cnf
