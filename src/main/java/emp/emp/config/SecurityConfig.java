@@ -13,13 +13,16 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import emp.emp.auth.jwt.JwtFilter;
 import emp.emp.auth.oauth2.handler.OAuth2FailureHandler;
 import emp.emp.auth.oauth2.handler.OAuth2SuccessHandler;
 import emp.emp.auth.oauth2.service.CustomOAuth2UserService;
+import emp.emp.util.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -29,16 +32,18 @@ public class SecurityConfig {
 
 	private static final List<String> CORS_WHITELIST = List.of(
 		"http://localhost:5173"
-
 	);
 	private static final List<String> WHITELIST = List.of(
-		"/example"
-
+		"/api/register",
+		"/api/login",
+		"/api/token/**",
+		"/login-success"
 	);
 
 	private final CustomOAuth2UserService customOAuth2UserService;
 	private final OAuth2SuccessHandler oAuth2SuccessHandler;
 	private final OAuth2FailureHandler oAuth2FailureHandler;
+	private final JwtTokenProvider jwtTokenProvider;
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -59,8 +64,13 @@ public class SecurityConfig {
 		http
 			.authorizeHttpRequests(auth -> auth
 				.requestMatchers(WHITELIST.toArray(new String[0])).permitAll()
+				.requestMatchers("/api/auth/semi/**").hasRole("SEMI_USER")
+				.requestMatchers("/api/auth/user/**").hasRole("USER")
 				.anyRequest().authenticated()
 			);
+
+		http
+			.addFilterBefore(new JwtFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
 		http
 			.sessionManagement((session) -> session

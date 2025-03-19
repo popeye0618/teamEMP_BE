@@ -6,6 +6,7 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
@@ -50,9 +51,17 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 	}
 
 	private Member register(OAuth2ProviderUser userInfo) {
+
+		String email = userInfo.getEmail();
+
+		if (memberRepository.existsByEmail(email)) {
+			OAuth2Error oauth2Error = new OAuth2Error("email_duplicated", "이 이메일은 이미 사용 중입니다.", null);
+			throw new OAuth2AuthenticationException(oauth2Error, "이메일 중복 오류");
+		}
+
 		Member newMember = Member.builder()
 			.provider(userInfo.getProvider())
-			.email(userInfo.getEmail())
+			.email(email)
 			.verifyId(userInfo.getVerifyId())
 			.role(Role.ROLE_SEMI_USER)
 			.build();
