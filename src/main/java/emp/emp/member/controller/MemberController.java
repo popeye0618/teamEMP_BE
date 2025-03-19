@@ -6,21 +6,24 @@ import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import emp.emp.auth.custom.CustomUserDetails;
 import emp.emp.member.entity.Member;
+import emp.emp.util.api_response.ErrorCode;
 import emp.emp.util.api_response.Response;
 import emp.emp.util.security.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class MemberController {
 
 	private final SecurityUtil securityUtil;
 
-	@GetMapping("/example")
+	@GetMapping("/auth/semi/example")
 	public ResponseEntity<Response<Map<String, Object>>> example(
 		@AuthenticationPrincipal CustomUserDetails userDetails) {
 		Map<String, Object> profile = new HashMap<>();
@@ -33,4 +36,6 @@ public class MemberController {
 
 		return Response.ok(profile).toResponseEntity();
 	}
+
+
 }
