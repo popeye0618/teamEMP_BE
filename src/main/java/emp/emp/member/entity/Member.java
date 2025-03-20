@@ -44,9 +44,11 @@ public class Member extends BaseEntity {
 
 	private LocalDate birthDate;
 
+	private String address;
+
 	@Builder
 	public Member(String provider, String verifyId, String username, String email, String password, Role role,
-		String gender, LocalDate birthDate) {
+		String gender, LocalDate birthDate, String address) {
 		this.provider = provider;
 		this.verifyId = verifyId;
 		this.username = username;
@@ -55,6 +57,7 @@ public class Member extends BaseEntity {
 		this.role = role;
 		this.gender = gender;
 		this.birthDate = birthDate;
+		this.address = address;
 	}
 
 	/**
