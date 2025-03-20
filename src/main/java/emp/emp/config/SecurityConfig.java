@@ -36,8 +36,7 @@ public class SecurityConfig {
 	private static final List<String> WHITELIST = List.of(
 		"/api/register",
 		"/api/login",
-		"/api/token/**",
-		"/login-success"
+		"/api/token/**"
 	);
 
 	private final CustomOAuth2UserService customOAuth2UserService;

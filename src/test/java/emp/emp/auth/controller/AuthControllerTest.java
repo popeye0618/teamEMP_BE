@@ -81,7 +81,7 @@ class AuthControllerTest {
 		registerRequest.setEmail("newuser@example.com");
 		registerRequest.setPassword("newpassword");
 
-		mockMvc.perform(post("/register")
+		mockMvc.perform(post("/api/register")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(registerRequest)))
 			.andExpect(status().isOk());
@@ -94,7 +94,7 @@ class AuthControllerTest {
 		loginRequest.setEmail("test@example.com");
 		loginRequest.setPassword("password123");
 
-		mockMvc.perform(post("/login")
+		mockMvc.perform(post("/api/login")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(loginRequest)))
 			.andExpect(status().is(302))
@@ -108,7 +108,7 @@ class AuthControllerTest {
 		loginRequest.setEmail("test@example.com");
 		loginRequest.setPassword("wrong password");
 
-		mockMvc.perform(post("/login")
+		mockMvc.perform(post("/api/login")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(loginRequest)))
 			.andExpect(status().is4xxClientError());
@@ -127,7 +127,7 @@ class AuthControllerTest {
 		String tokenDataJson = objectMapper.writeValueAsString(tokenData);
 		redisTemplate.opsForValue().set(tempCode, tokenDataJson, 5, TimeUnit.MINUTES);
 
-		mockMvc.perform(post("/token/exchange")
+		mockMvc.perform(post("/api/token/exchange")
 				.param("code", tempCode))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.data.accessToken").value("dummyAccessToken"))
@@ -142,7 +142,7 @@ class AuthControllerTest {
 		loginRequest.setEmail("test@example.com");
 		loginRequest.setPassword("password123");
 
-		var loginResult = mockMvc.perform(post("/login")
+		var loginResult = mockMvc.perform(post("/api/login")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(loginRequest)))
 			.andExpect(status().is(302))
@@ -156,7 +156,7 @@ class AuthControllerTest {
 		String tempCode = query.split("=")[1];
 		assertNotNull(tempCode, "Temporary code should not be null");
 
-		MvcResult exchangeResult = mockMvc.perform(post("/token/exchange")
+		MvcResult exchangeResult = mockMvc.perform(post("/api/token/exchange")
 				.param("code", tempCode))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.data.accessToken").exists())
@@ -172,7 +172,7 @@ class AuthControllerTest {
 		assertNotNull(refreshToken, "Refresh token should not be null");
 
 		// Step 3: /token/refresh 엔드포인트를 호출하여 새 토큰들을 발급받음.
-		mockMvc.perform(get("/token/refresh")
+		mockMvc.perform(get("/api/token/refresh")
 				.header("Refresh-Token", refreshToken))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.data.accessToken").exists())
