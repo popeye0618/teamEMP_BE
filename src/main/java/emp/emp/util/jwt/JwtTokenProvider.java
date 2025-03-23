@@ -49,16 +49,12 @@ public class JwtTokenProvider {
 	public String generateAccessToken(CustomUserDetails userDetails) {
 		Date now = new Date();
 		Date expiryDate = new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_TIME);
-		Key key = getKeyFromString(JWT_SECRET);
+		Map<String, Object> claims = Map.of(
+			"email", userDetails.getEmail(),
+			"role", userDetails.getAuthorities().iterator().next().getAuthority()
+		);
 
-		return Jwts.builder()
-			.setSubject(String.valueOf(userDetails.getName()))
-			.setIssuedAt(now)
-			.setExpiration(expiryDate)
-			.claim("email", userDetails.getEmail())
-			.claim("role", userDetails.getAuthorities().iterator().next().getAuthority())
-			.signWith(key, SignatureAlgorithm.HS512)
-			.compact();
+		return createToken(String.valueOf(userDetails.getName()), now, expiryDate, claims);
 	}
 
 	/**
@@ -72,12 +68,7 @@ public class JwtTokenProvider {
 		Date expiryDate = new Date(now.getTime() + REFRESH_TOKEN_EXPIRE_TIME);
 		Key key = getKeyFromString(JWT_SECRET);
 
-		String refreshToken = Jwts.builder()
-			.setSubject(String.valueOf(userDetails.getName()))
-			.setIssuedAt(now)
-			.setExpiration(expiryDate)
-			.signWith(key, SignatureAlgorithm.HS512)
-			.compact();
+		String refreshToken = createToken(String.valueOf(userDetails.getName()), now, expiryDate, null);
 
 		// 키: verifyId, 값: refreshToken
 		redisTemplate.opsForValue().set(userDetails.getName(), refreshToken, REFRESH_TOKEN_EXPIRE_TIME, TimeUnit.MILLISECONDS);
@@ -105,29 +96,18 @@ public class JwtTokenProvider {
 
 		redisTemplate.delete(verifyId);
 
-
 		Date now = new Date();
 		Date accessExpiryDate = new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_TIME);
 		Date refreshExpiryDate = new Date(now.getTime() + REFRESH_TOKEN_EXPIRE_TIME);
-		Key key = getKeyFromString(JWT_SECRET);
 		Member member = memberRepository.findByVerifyId(verifyId)
 			.orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+		Map<String, Object> accessClaims = Map.of(
+			"email", member.getEmail(),
+			"role", member.getRole()
+		);
 
-		String newAccessToken = Jwts.builder()
-			.setSubject(verifyId)
-			.setIssuedAt(now)
-			.setExpiration(accessExpiryDate)
-			.claim("email", member.getEmail())
-			.claim("role", member.getRole())
-			.signWith(key, SignatureAlgorithm.HS512)
-			.compact();
-
-		String newRefreshToken = Jwts.builder()
-			.setSubject(verifyId)
-			.setIssuedAt(now)
-			.setExpiration(refreshExpiryDate)
-			.signWith(key, SignatureAlgorithm.HS512)
-			.compact();
+		String newAccessToken = createToken(verifyId, now, accessExpiryDate, accessClaims);
+		String newRefreshToken = createToken(verifyId, now, refreshExpiryDate, null);
 
 		redisTemplate.opsForValue().set(verifyId, newRefreshToken, REFRESH_TOKEN_EXPIRE_TIME, TimeUnit.MILLISECONDS);
 
@@ -150,5 +130,27 @@ public class JwtTokenProvider {
 	public Claims getClaims(String token) {
 		Key key = getKeyFromString(JWT_SECRET);
 		return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+	}
+
+	/**
+	 * 토큰 생성에 공통되는 부분을 추출한 메서드
+	 *
+	 * @param subject 토큰의 주체 (verifyId)
+	 * @param issuedAt 토큰 발행 시간
+	 * @param expiration 토큰 만료 시간
+	 * @param claims 추가로 담을 클레임 (없으면 null 가능)
+	 * @return JWT 토큰 문자열
+	 */
+	private String createToken(String subject, Date issuedAt, Date expiration, Map<String, Object> claims) {
+		Key key = getKeyFromString(JWT_SECRET);
+		var builder = Jwts.builder()
+			.setSubject(subject)
+			.setIssuedAt(issuedAt)
+			.setExpiration(expiration);
+
+		if (claims != null) {
+			claims.forEach(builder::claim);
+		}
+		return builder.signWith(key, SignatureAlgorithm.HS512).compact();
 	}
 }
