@@ -9,7 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import emp.emp.auth.custom.CustomUserDetails;
-import emp.emp.util.api_response.ErrorCode;
+import emp.emp.auth.exception.AuthErrorCode;
 import emp.emp.util.api_response.Response;
 import emp.emp.util.jwt.JwtTokenProvider;
 import io.jsonwebtoken.Claims;
@@ -24,13 +24,12 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
-	private final JwtTokenProvider jwtTokenProvider;
-
 	private static final List<String> WHITELIST = List.of(
 		"/api/register",
 		"/api/login",
 		"/api/token/**"
 	);
+	private final JwtTokenProvider jwtTokenProvider;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -77,7 +76,7 @@ public class JwtFilter extends OncePerRequestFilter {
 	private void sendTokenRefreshResponse(HttpServletResponse response) throws IOException {
 		response.setContentType("application/json;charset=UTF-8");
 		response.setStatus(HttpStatus.UNAUTHORIZED.value());
-		Response<Void> errorResponse = Response.errorResponse(ErrorCode.INVALID_ACCESS_TOKEN);
+		Response<Void> errorResponse = Response.errorResponse(AuthErrorCode.INVALID_ACCESS_TOKEN);
 		response.getWriter().write(errorResponse.convertToJson());
 	}
 }

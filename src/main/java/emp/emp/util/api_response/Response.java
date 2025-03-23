@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import emp.emp.util.api_response.error_code.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

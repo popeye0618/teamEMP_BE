@@ -22,12 +22,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import emp.emp.auth.custom.CustomUserDetails;
+import emp.emp.auth.exception.AuthErrorCode;
 import emp.emp.auth.own.dto.LoginRequest;
 import emp.emp.auth.own.dto.RegisterRequest;
 import emp.emp.auth.own.service.AuthService;
 import emp.emp.exception.BusinessException;
-import emp.emp.util.api_response.ErrorCode;
 import emp.emp.util.api_response.Response;
+import emp.emp.util.api_response.error_code.GeneralErrorCode;
 import emp.emp.util.jwt.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -44,18 +45,17 @@ public class AuthController {
 	// @Value("${redirect-url.frontend.semi-user}")
 	// private String REDIRECT_URL_SEMI_USER;
 
-	@Value("${redirect-url.frontend.main}")
-	private String REDIRECT_URL_MAIN;
-
 	private final AuthService authService;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final PasswordEncoder passwordEncoder;
 	private final StringRedisTemplate redisTemplate;
 	private final ObjectMapper objectMapper;
+	@Value("${redirect-url.frontend.main}")
+	private String REDIRECT_URL_MAIN;
 
 	@GetMapping("/login-failed")
 	public ResponseEntity<Response<Object>> loginFailedExample() {
-		return Response.errorResponse(ErrorCode.EMAIL_DUPLICATED).toResponseEntity();
+		return Response.errorResponse(AuthErrorCode.EMAIL_DUPLICATED).toResponseEntity();
 	}
 
 	@GetMapping("/login-success")
@@ -66,10 +66,11 @@ public class AuthController {
 
 	/**
 	 * 자체 로그인
-	 * @param request 로그인에 필요한 유저 정보
+	 *
+	 * @param request  로그인에 필요한 유저 정보
 	 * @param response redirect를 위한 HttpServletResponse
 	 * @throws IOException redirect 예외
-	 * 성공 시 임시 코드 발급 및 리다이렉트
+	 *                     성공 시 임시 코드 발급 및 리다이렉트
 	 */
 	@PostMapping("/login")
 	public void login(@RequestBody LoginRequest request, HttpServletResponse response) throws IOException {
@@ -77,7 +78,7 @@ public class AuthController {
 			request.getEmail());
 
 		if (!passwordEncoder.matches(request.getPassword(), userDetails.getPassword())) {
-			throw new BusinessException(ErrorCode.INVALID_LOGIN_ARGUMENT);
+			throw new BusinessException(AuthErrorCode.INVALID_LOGIN_ARGUMENT);
 		}
 
 		UsernamePasswordAuthenticationToken authenticationToken =
@@ -111,6 +112,7 @@ public class AuthController {
 
 	/**
 	 * 자체 회원가입
+	 *
 	 * @param request 회원가입을 위한 정보
 	 * @return 200 ok
 	 */
@@ -131,7 +133,7 @@ public class AuthController {
 
 		String refreshToken = request.getHeader("Refresh-Token");
 		if (refreshToken == null) {
-			throw new BusinessException(ErrorCode.INVALID_REFRESH_TOKEN);
+			throw new BusinessException(AuthErrorCode.INVALID_REFRESH_TOKEN);
 		}
 
 		Map<String, String> tokens = jwtTokenProvider.refreshTokens(refreshToken);
@@ -141,17 +143,19 @@ public class AuthController {
 
 	/**
 	 * 임시 코드를 이용해 AT, RT를 주는 메서드
+	 *
 	 * @param tempCode 임시 코드
-	 * @return
+	 * @return 200 AT, RT
 	 * @throws IOException
 	 */
 	@PostMapping("/token/exchange")
-	public ResponseEntity<Response<Map<String, String>>> exchangeToken(@RequestParam("code") String tempCode) throws IOException {
+	public ResponseEntity<Response<Map<String, String>>> exchangeToken(@RequestParam("code") String tempCode) throws
+		IOException {
 
 		String tokenDataJson = redisTemplate.opsForValue().get(tempCode);
 
 		if (tokenDataJson == null) {
-			throw new BusinessException(ErrorCode.BAD_REQUEST);
+			throw new BusinessException(GeneralErrorCode.BAD_REQUEST);
 		}
 
 		redisTemplate.delete(tempCode);

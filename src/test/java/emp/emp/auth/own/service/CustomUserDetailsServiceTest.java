@@ -16,12 +16,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import emp.emp.auth.custom.CustomUserDetails;
+import emp.emp.auth.exception.AuthErrorCode;
 import emp.emp.auth.own.dto.RegisterRequest;
 import emp.emp.exception.BusinessException;
 import emp.emp.member.entity.Member;
 import emp.emp.member.enums.Role;
 import emp.emp.member.repository.MemberRepository;
-import emp.emp.util.api_response.ErrorCode;
 
 @ExtendWith(MockitoExtension.class)
 class CustomUserDetailsServiceTest {
@@ -59,7 +59,7 @@ class CustomUserDetailsServiceTest {
 
 		assertNotNull(userDetails);
 		assertTrue(userDetails instanceof CustomUserDetails);
-		CustomUserDetails customDetails = (CustomUserDetails) userDetails;
+		CustomUserDetails customDetails = (CustomUserDetails)userDetails;
 		assertEquals("test@example.com", customDetails.getEmail());
 	}
 
@@ -72,7 +72,7 @@ class CustomUserDetailsServiceTest {
 		BusinessException exception = assertThrows(BusinessException.class, () -> {
 			customUserDetailsService.loadUserByUsername("nonexistent@example.com");
 		});
-		assertEquals(ErrorCode.USER_NOT_FOUND, exception.getErrorCode());
+		assertEquals(AuthErrorCode.USER_NOT_FOUND, exception.getErrorCode());
 	}
 
 	@Test
@@ -103,7 +103,7 @@ class CustomUserDetailsServiceTest {
 		BusinessException exception = assertThrows(BusinessException.class, () -> {
 			customUserDetailsService.register(request);
 		});
-		assertEquals(ErrorCode.EMAIL_DUPLICATED, exception.getErrorCode());
+		assertEquals(AuthErrorCode.EMAIL_DUPLICATED, exception.getErrorCode());
 	}
 
 }

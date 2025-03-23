@@ -11,10 +11,10 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import emp.emp.auth.custom.CustomUserDetails;
+import emp.emp.auth.exception.AuthErrorCode;
 import emp.emp.exception.BusinessException;
 import emp.emp.member.entity.Member;
 import emp.emp.member.repository.MemberRepository;
-import emp.emp.util.api_response.ErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -71,27 +71,29 @@ public class JwtTokenProvider {
 		String refreshToken = createToken(String.valueOf(userDetails.getName()), now, expiryDate, null);
 
 		// 키: verifyId, 값: refreshToken
-		redisTemplate.opsForValue().set(userDetails.getName(), refreshToken, REFRESH_TOKEN_EXPIRE_TIME, TimeUnit.MILLISECONDS);
+		redisTemplate.opsForValue()
+			.set(userDetails.getName(), refreshToken, REFRESH_TOKEN_EXPIRE_TIME, TimeUnit.MILLISECONDS);
 
 		return refreshToken;
 	}
 
 	/**
 	 * 리프레시 토큰을 이용해 새 토큰 발급 (토큰 로테이션)
+	 *
 	 * @param refreshToken 리프레시 토큰
 	 * @return AccessToken, RefreshToken
 	 */
 	public Map<String, String> refreshTokens(String refreshToken) {
 
 		if (!validateToken(refreshToken)) {
-			throw new BusinessException(ErrorCode.INVALID_REFRESH_TOKEN);
+			throw new BusinessException(AuthErrorCode.INVALID_REFRESH_TOKEN);
 		}
 
 		String verifyId = getClaims(refreshToken).getSubject();
 
 		String storedRefreshToken = redisTemplate.opsForValue().get(verifyId);
 		if (!storedRefreshToken.equals(refreshToken)) {
-			throw new BusinessException(ErrorCode.INVALID_REFRESH_TOKEN);
+			throw new BusinessException(AuthErrorCode.INVALID_REFRESH_TOKEN);
 		}
 
 		redisTemplate.delete(verifyId);
@@ -100,7 +102,7 @@ public class JwtTokenProvider {
 		Date accessExpiryDate = new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_TIME);
 		Date refreshExpiryDate = new Date(now.getTime() + REFRESH_TOKEN_EXPIRE_TIME);
 		Member member = memberRepository.findByVerifyId(verifyId)
-			.orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+			.orElseThrow(() -> new BusinessException(AuthErrorCode.USER_NOT_FOUND));
 		Map<String, Object> accessClaims = Map.of(
 			"email", member.getEmail(),
 			"role", member.getRole()
@@ -135,10 +137,10 @@ public class JwtTokenProvider {
 	/**
 	 * 토큰 생성에 공통되는 부분을 추출한 메서드
 	 *
-	 * @param subject 토큰의 주체 (verifyId)
-	 * @param issuedAt 토큰 발행 시간
+	 * @param subject    토큰의 주체 (verifyId)
+	 * @param issuedAt   토큰 발행 시간
 	 * @param expiration 토큰 만료 시간
-	 * @param claims 추가로 담을 클레임 (없으면 null 가능)
+	 * @param claims     추가로 담을 클레임 (없으면 null 가능)
 	 * @return JWT 토큰 문자열
 	 */
 	private String createToken(String subject, Date issuedAt, Date expiration, Map<String, Object> claims) {

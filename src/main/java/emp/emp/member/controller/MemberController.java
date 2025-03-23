@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import emp.emp.auth.custom.CustomUserDetails;
 import emp.emp.member.entity.Member;
-import emp.emp.util.api_response.ErrorCode;
 import emp.emp.util.api_response.Response;
 import emp.emp.util.security.SecurityUtil;
 import lombok.RequiredArgsConstructor;
