@@ -1,6 +1,6 @@
 package emp.emp.exception;
 
-import emp.emp.util.api_response.ErrorCode;
+import emp.emp.util.api_response.error_code.ErrorCode;
 import lombok.Builder;
 import lombok.Getter;
 

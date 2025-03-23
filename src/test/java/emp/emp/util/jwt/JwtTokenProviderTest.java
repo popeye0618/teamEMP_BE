@@ -15,22 +15,20 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import emp.emp.auth.custom.CustomUserDetails;
 import emp.emp.auth.dto.LoginDto;
+import emp.emp.auth.exception.AuthErrorCode;
 import emp.emp.exception.BusinessException;
 import emp.emp.member.entity.Member;
 import emp.emp.member.enums.Role;
 import emp.emp.member.repository.MemberRepository;
-import emp.emp.util.api_response.ErrorCode;
 import io.jsonwebtoken.Claims;
 
 class JwtTokenProviderTest {
 
+	private final long REFRESH_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000;
+	private final String jwtSecretTest = "MySuperSecretKeyForHS512ThatIsAtLeast64BytesLongAndSuperSafeIndeed!";
 	private JwtTokenProvider jwtTokenProvider;
 	private MemberRepository memberRepository;
 	private StringRedisTemplate redisTemplate;
-
-	private final long REFRESH_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000;
-
-	private final String jwtSecretTest = "MySuperSecretKeyForHS512ThatIsAtLeast64BytesLongAndSuperSafeIndeed!";
 
 	@BeforeEach
 	void setUp() {
@@ -132,6 +130,7 @@ class JwtTokenProviderTest {
 		BusinessException exception = assertThrows(BusinessException.class, () -> {
 			jwtTokenProvider.refreshTokens(invalidToken);
 		});
-		assertEquals(ErrorCode.INVALID_REFRESH_TOKEN, exception.getErrorCode(), "Exception error code should match");
+		assertEquals(AuthErrorCode.INVALID_REFRESH_TOKEN, exception.getErrorCode(),
+			"Exception error code should match");
 	}
 }
