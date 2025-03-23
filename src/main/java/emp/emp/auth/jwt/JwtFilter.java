@@ -43,25 +43,29 @@ public class JwtFilter extends OncePerRequestFilter {
 
 		String accessToken = resolveToken(request);
 
-		if (accessToken != null) {
-			try {
-				if (jwtTokenProvider.validateToken(accessToken)) {
-					Claims claims = jwtTokenProvider.getClaims(accessToken);
-					CustomUserDetails userDetails = CustomUserDetails.createCustomUserDetailsFromClaims(claims);
+		if (accessToken == null) {
+			sendUnauthorizedResponse(response);
+			return;
+		}
 
-					UsernamePasswordAuthenticationToken authentication =
-						new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-					SecurityContextHolder.getContext().setAuthentication(authentication);
+		try {
+			if (jwtTokenProvider.validateToken(accessToken)) {
+				Claims claims = jwtTokenProvider.getClaims(accessToken);
+				CustomUserDetails userDetails = CustomUserDetails.createCustomUserDetailsFromClaims(claims);
 
-				} else {
-					sendTokenRefreshResponse(response);
-					return;
-				}
-			} catch (Exception e) {
+				UsernamePasswordAuthenticationToken authentication =
+					new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+				SecurityContextHolder.getContext().setAuthentication(authentication);
+
+			} else {
 				sendTokenRefreshResponse(response);
 				return;
 			}
+		} catch (Exception e) {
+			sendTokenRefreshResponse(response);
+			return;
 		}
+
 		filterChain.doFilter(request, response);
 	}
 
@@ -71,6 +75,13 @@ public class JwtFilter extends OncePerRequestFilter {
 			return bearerToken.substring(7);
 		}
 		return null;
+	}
+
+	private void sendUnauthorizedResponse(HttpServletResponse response) throws IOException {
+		response.setContentType("application/json;charset=UTF-8");
+		response.setStatus(HttpStatus.UNAUTHORIZED.value());
+		Response<Void> errorResponse = Response.errorResponse(AuthErrorCode.UNAUTHORIZED);
+		response.getWriter().write(errorResponse.convertToJson());
 	}
 
 	private void sendTokenRefreshResponse(HttpServletResponse response) throws IOException {
