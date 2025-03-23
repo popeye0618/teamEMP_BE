@@ -27,7 +27,8 @@ public class JwtFilter extends OncePerRequestFilter {
 	private static final List<String> WHITELIST = List.of(
 		"/api/register",
 		"/api/login",
-		"/api/token/**"
+		"/api/token/exchange",
+		"/api/token/refresh"
 	);
 	private final JwtTokenProvider jwtTokenProvider;
 
