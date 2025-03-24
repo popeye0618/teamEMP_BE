@@ -32,6 +32,7 @@ import emp.emp.util.api_response.error_code.GeneralErrorCode;
 import emp.emp.util.jwt.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -70,7 +71,7 @@ public class AuthController {
 	 * @param request  로그인에 필요한 유저 정보
 	 * @param response redirect를 위한 HttpServletResponse
 	 * @throws IOException redirect 예외
-	 *                     성공 시 임시 코드 발급 및 리다이렉트
+	 * 성공 시 임시 코드 발급 및 리다이렉트
 	 */
 	@PostMapping("/login")
 	public void login(@RequestBody LoginRequest request, HttpServletResponse response) throws IOException {
@@ -117,7 +118,7 @@ public class AuthController {
 	 * @return 200 ok
 	 */
 	@PostMapping("/register")
-	public ResponseEntity<Response<Void>> register(@RequestBody RegisterRequest request) {
+	public ResponseEntity<Response<Void>> register(@RequestBody @Valid RegisterRequest request) {
 		authService.register(request);
 
 		return Response.ok().toResponseEntity();

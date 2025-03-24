@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtFilter extends OncePerRequestFilter {
 
 	private static final List<String> WHITELIST = List.of(
+		"/login",
 		"/api/register",
 		"/api/login",
 		"/api/token/exchange",

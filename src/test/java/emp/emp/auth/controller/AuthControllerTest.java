@@ -79,12 +79,42 @@ class AuthControllerTest {
 
 		RegisterRequest registerRequest = new RegisterRequest();
 		registerRequest.setEmail("newuser@example.com");
-		registerRequest.setPassword("newpassword");
+		registerRequest.setPassword("newpassword12!");
 
 		mockMvc.perform(post("/api/register")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(registerRequest)))
 			.andExpect(status().isOk());
+	}
+
+	@Test
+	@DisplayName("회원가입 이메일 정규표현식 위반 테스트")
+	@Transactional
+	void testRegisterEmailRegexViolation() throws Exception {
+		RegisterRequest registerRequest = new RegisterRequest();
+		registerRequest.setEmail("invalid@example");
+		registerRequest.setPassword("ValidPW12!");
+
+		mockMvc.perform(post("/api/register")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(registerRequest)))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.message").value("입력 값이 유효하지 않습니다."));
+	}
+
+	@Test
+	@DisplayName("회원가입 비밀번호 정규표현식 위반 테스트")
+	@Transactional
+	void testRegisterPasswordRegexViolation() throws Exception {
+		RegisterRequest registerRequest = new RegisterRequest();
+		registerRequest.setEmail("invalid@example.com");
+		registerRequest.setPassword("invalidPW");  // 조건 위반: 숫자와 특수문자 없음
+
+		mockMvc.perform(post("/api/register")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(registerRequest)))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.message").value("입력 값이 유효하지 않습니다."));
 	}
 
 	@Test
