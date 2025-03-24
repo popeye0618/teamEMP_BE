@@ -3,15 +3,19 @@ package emp.emp.member.entity;
 import java.time.LocalDate;
 import java.time.Period;
 
+import emp.emp.family.entity.Family;
 import emp.emp.member.enums.Role;
 import emp.emp.util.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -46,6 +50,10 @@ public class Member extends BaseEntity {
 
 	private String address;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "family_id")
+	private Family family;
+
 	@Builder
 	public Member(String provider, String verifyId, String username, String email, String password, Role role,
 		String gender, LocalDate birthDate, String address) {
@@ -58,6 +66,10 @@ public class Member extends BaseEntity {
 		this.gender = gender;
 		this.birthDate = birthDate;
 		this.address = address;
+	}
+
+	public void setFamily(Family family) {
+		this.family = family;
 	}
 
 	/**
