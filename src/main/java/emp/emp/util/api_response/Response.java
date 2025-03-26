@@ -22,26 +22,26 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Response<T> {
-	private HttpStatus status;
+	private int status;
 	private String message;
 	private T data;
 
 	public static Response<Void> ok() {
 		Response<Void> response = new Response<>();
-		response.status = HttpStatus.OK;
+		response.status = HttpStatus.OK.value();
 		return response;
 	}
 
 	public static <T> Response<T> ok(T data) {
 		Response<T> response = new Response<>();
-		response.status = HttpStatus.OK;
+		response.status = HttpStatus.OK.value();
 		response.data = data;
 		return response;
 	}
 
 	public static <T> Response<T> errorResponse(ErrorCode errorCode) {
 		Response<T> response = new Response<>();
-		response.status = errorCode.getHttpStatus();
+		response.status = errorCode.getHttpStatus().value();
 		response.message = errorCode.getMessage();
 		response.data = null;
 		return response;
@@ -58,7 +58,7 @@ public class Response<T> {
 	 * @return ResponseEntity로 래핑된 Response 객체
 	 */
 	public ResponseEntity<Response<T>> toResponseEntity() {
-		HttpStatus httpStatus = this.status;
+		HttpStatus httpStatus = HttpStatus.valueOf(this.status);
 		return new ResponseEntity<>(this, httpStatus);
 	}
 }
