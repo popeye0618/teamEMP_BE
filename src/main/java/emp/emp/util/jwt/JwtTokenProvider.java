@@ -66,7 +66,6 @@ public class JwtTokenProvider {
 	public String generateRefreshToken(CustomUserDetails userDetails) {
 		Date now = new Date();
 		Date expiryDate = new Date(now.getTime() + REFRESH_TOKEN_EXPIRE_TIME);
-		Key key = getKeyFromString(JWT_SECRET);
 
 		String refreshToken = createToken(String.valueOf(userDetails.getName()), now, expiryDate, null);
 
@@ -96,7 +95,7 @@ public class JwtTokenProvider {
 			throw new BusinessException(AuthErrorCode.INVALID_REFRESH_TOKEN);
 		}
 
-		redisTemplate.delete(verifyId);
+		deleteRefreshToken(verifyId);
 
 		Date now = new Date();
 		Date accessExpiryDate = new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_TIME);
@@ -132,6 +131,10 @@ public class JwtTokenProvider {
 	public Claims getClaims(String token) {
 		Key key = getKeyFromString(JWT_SECRET);
 		return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+	}
+
+	public void deleteRefreshToken(String verifyId) {
+		redisTemplate.delete(verifyId);
 	}
 
 	/**

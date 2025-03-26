@@ -1,7 +1,5 @@
 package emp.emp.member.service;
 
-import java.time.LocalDate;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class MemberServiceImpl implements MemberService{
+public class MemberServiceImpl implements MemberService {
 
 	private final MemberRepository memberRepository;
 	private final SecurityUtil securityUtil;
@@ -27,8 +25,9 @@ public class MemberServiceImpl implements MemberService{
 
 	/**
 	 * 유저 피처 입력
+	 *
 	 * @param userDetails 로그인된 유저
-	 * @param request 유저 정보
+	 * @param request     유저 정보
 	 * @return AT, RT
 	 */
 	@Override
@@ -41,6 +40,8 @@ public class MemberServiceImpl implements MemberService{
 		}
 
 		inputUserInfo(currentMember, request);
+
+		jwtTokenProvider.deleteRefreshToken(currentMember.getVerifyId());
 
 		String accessToken = jwtTokenProvider.generateAccessToken(userDetails);
 		String refreshToken = jwtTokenProvider.generateRefreshToken(userDetails);

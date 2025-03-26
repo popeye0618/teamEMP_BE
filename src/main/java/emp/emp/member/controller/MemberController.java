@@ -44,16 +44,17 @@ public class MemberController {
 
 	/**
 	 * 유저 피처 입력
+	 *
 	 * @param userDetails 로그인된 유저
-	 * @param request 유저 정보
+	 * @param request     유저 정보
 	 * @return AT, RT
 	 */
 	@PostMapping("/auth/semi/feature")
-	public ResponseEntity<Response<InputFeatureRes>> inputFeature(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody InputFeatureReq request) {
+	public ResponseEntity<Response<InputFeatureRes>> inputFeature(
+		@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody InputFeatureReq request) {
 		InputFeatureRes response = memberService.inputFeature(userDetails, request);
 
 		return Response.ok(response).toResponseEntity();
 	}
-
 
 }
