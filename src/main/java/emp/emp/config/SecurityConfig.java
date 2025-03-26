@@ -47,13 +47,6 @@ public class SecurityConfig {
 	private final JwtTokenProvider jwtTokenProvider;
 
 	@Bean
-	public WebSecurityCustomizer webSecurityCustomizer() {
-		// security를 적용하지 않을 리소스
-		return web -> web.ignoring()
-			.requestMatchers("/favicon.ico", "/default-ui.css");
-	}
-
-	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 		http

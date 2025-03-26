@@ -25,7 +25,11 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtFilter extends OncePerRequestFilter {
 
 	private static final List<String> WHITELIST = List.of(
+		"/favicon.ico",
+		"/default-ui.css",
 		"/login",
+		"/login-success",
+		"/login-failed",
 		"/api/register",
 		"/api/login",
 		"/api/token/exchange",
@@ -43,32 +47,48 @@ public class JwtFilter extends OncePerRequestFilter {
 			return;
 		}
 
+		if (!processTokenAuthentication(request, response)) {
+			return;
+		}
+
+		filterChain.doFilter(request, response);
+	}
+
+	/**
+	 * 인증 토큰을 처리하는 메서드
+	 * @param request 클라이언트 요청 객체
+	 * @param response 클라이언트 응답 객체
+	 * @return 인증이 정상적으로 완료되면 true, 아니면 false
+	 * @throws IOException
+	 */
+	private boolean processTokenAuthentication(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String accessToken = resolveToken(request);
 
 		if (accessToken == null) {
 			sendUnauthorizedResponse(response);
-			return;
+			return false;
 		}
 
 		try {
 			if (jwtTokenProvider.validateToken(accessToken)) {
 				Claims claims = jwtTokenProvider.getClaims(accessToken);
 				CustomUserDetails userDetails = CustomUserDetails.createCustomUserDetailsFromClaims(claims);
-
-				UsernamePasswordAuthenticationToken authentication =
-					new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-				SecurityContextHolder.getContext().setAuthentication(authentication);
-
+				setUserAuthentication(userDetails);
 			} else {
 				sendTokenRefreshResponse(response);
-				return;
+				return false;
 			}
 		} catch (Exception e) {
 			sendTokenRefreshResponse(response);
-			return;
+			return false;
 		}
+		return true;
+	}
 
-		filterChain.doFilter(request, response);
+	private void setUserAuthentication(CustomUserDetails userDetails) {
+		UsernamePasswordAuthenticationToken authentication =
+			new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+		SecurityContextHolder.getContext().setAuthentication(authentication);
 	}
 
 	private String resolveToken(HttpServletRequest request) {
