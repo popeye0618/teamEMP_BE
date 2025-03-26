@@ -13,7 +13,9 @@ public enum AuthErrorCode implements ErrorCode {
 	EMAIL_DUPLICATED(HttpStatus.BAD_REQUEST, "중복된 이메일"),
 	INVALID_LOGIN_ARGUMENT(HttpStatus.NOT_FOUND, "잘못된 비밀번호"),
 	INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "잘못된 엑세스 토큰, 리프레시 토큰으로 요청하세요"),
-	INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "잘못된 리프레시 토큰");
+	INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "잘못된 리프레시 토큰"),
+	INVALID_ROLE(HttpStatus.UNAUTHORIZED, "잘못된 권한으로 요청"),
+	;
 
 	private final HttpStatus httpStatus;
 	private final String message;

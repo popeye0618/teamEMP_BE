@@ -46,7 +46,7 @@ public class Member extends BaseEntity {
 
 	private String gender;
 
-	private LocalDate birthDate;
+	private LocalDate birthDay;
 
 	private String address;
 
@@ -56,7 +56,7 @@ public class Member extends BaseEntity {
 
 	@Builder
 	public Member(String provider, String verifyId, String username, String email, String password, Role role,
-		String gender, LocalDate birthDate, String address) {
+		String gender, LocalDate birthDay, String address) {
 		this.provider = provider;
 		this.verifyId = verifyId;
 		this.username = username;
@@ -64,7 +64,7 @@ public class Member extends BaseEntity {
 		this.password = password;
 		this.role = role;
 		this.gender = gender;
-		this.birthDate = birthDate;
+		this.birthDay = birthDay;
 		this.address = address;
 	}
 
@@ -78,6 +78,26 @@ public class Member extends BaseEntity {
 	 * @return 만나이
 	 */
 	public int getAge() {
-		return Period.between(this.birthDate, LocalDate.now()).getYears();
+		return Period.between(this.birthDay, LocalDate.now()).getYears();
+	}
+
+	public void setRole(Role role) {
+		this.role = role;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public void setBirthDay(LocalDate birthDay) {
+		this.birthDay = birthDay;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 }

@@ -51,7 +51,7 @@ class FamilyServiceImplTest {
 			.password("password")
 			.role(Role.ROLE_USER)
 			.gender("MALE")
-			.birthDate(LocalDate.of(1990, 1, 1))
+			.birthDay(LocalDate.of(1990, 1, 1))
 			.address("Seoul")
 			.build();
 	}
@@ -100,7 +100,7 @@ class FamilyServiceImplTest {
 			.password("password")
 			.role(Role.ROLE_USER)
 			.gender("MALE")
-			.birthDate(LocalDate.of(1990, 2, 2))
+			.birthDay(LocalDate.of(1990, 2, 2))
 			.address("Busan")
 			.build();
 
@@ -191,7 +191,7 @@ class FamilyServiceImplTest {
 			.password("password")
 			.role(Role.ROLE_USER)
 			.gender("MALE")
-			.birthDate(LocalDate.of(1990, 2, 2))
+			.birthDay(LocalDate.of(1990, 2, 2))
 			.address("Busan")
 			.build();
 
@@ -243,7 +243,7 @@ class FamilyServiceImplTest {
 			.password("password")
 			.role(Role.ROLE_USER)
 			.gender("MALE")
-			.birthDate(LocalDate.of(1990, 2, 2))
+			.birthDay(LocalDate.of(1990, 2, 2))
 			.address("Busan")
 			.build();
 
@@ -278,7 +278,7 @@ class FamilyServiceImplTest {
 			.password("password")
 			.role(Role.ROLE_USER)
 			.gender("MALE")
-			.birthDate(LocalDate.of(1990, 2, 2))
+			.birthDay(LocalDate.of(1990, 2, 2))
 			.address("Busan")
 			.build();
 
@@ -347,7 +347,7 @@ class FamilyServiceImplTest {
 			.password("password")
 			.role(Role.ROLE_USER)
 			.gender("FEMALE")
-			.birthDate(LocalDate.of(1992, 3, 3))
+			.birthDay(LocalDate.of(1992, 3, 3))
 			.address("Incheon")
 			.build();
 		family.addMember(member2);
