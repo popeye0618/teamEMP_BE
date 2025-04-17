@@ -122,7 +122,8 @@ public class CalendarServiceImpl implements CalendarService {
   private CalendarEventResponse toResponse(CalendarEvent calendarEvent) {
     return CalendarEventResponse.builder()
             .eventId(calendarEvent.getEventId())
-            .memberId(calendarEvent.getMember().getId())
+            // .verifyId(calendarEvent.getMember().getId())
+            .verifyId(calendarEvent.getMember().getVerifyId())
             .eventType(calendarEvent.getEventType())
             .title(calendarEvent.getTitle())
             .startDate(calendarEvent.getStartDate())

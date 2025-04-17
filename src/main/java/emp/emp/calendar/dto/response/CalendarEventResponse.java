@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 public class CalendarEventResponse {
   private Long eventId;
-  private Long memberId;
+  private String verifyId;
   private CalendarEventType eventType;
   private String title;
   private LocalDateTime startDate;

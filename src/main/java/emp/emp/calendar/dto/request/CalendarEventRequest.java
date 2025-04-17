@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Setter
 public class CalendarEventRequest {
 
-  private Long memberId;
+  private String verifyId;
 
   private CalendarEventType eventType;
 
