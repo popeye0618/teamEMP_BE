@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/calendar")
+@RequestMapping("/auth/user/api/calendar")
 @RequiredArgsConstructor
 public class CalendarController {
 
