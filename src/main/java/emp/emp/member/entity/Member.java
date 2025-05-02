@@ -8,13 +8,28 @@ import java.util.List;
 
 import emp.emp.calendar.entity.CalendarEvent;
 import emp.emp.family.entity.Family;
+import emp.emp.health.entity.Health;
+import emp.emp.health.entity.HealthComment;
 import emp.emp.member.enums.Role;
 import emp.emp.util.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -30,6 +45,7 @@ public class Member extends BaseEntity {
 
 	private String verifyId;
 
+	@Setter
 	private String username;
 
 	private String email;
@@ -37,17 +53,37 @@ public class Member extends BaseEntity {
 	private String password;
 
 	@Enumerated(value = EnumType.STRING)
+	@Setter
 	private Role role;
 
+	@Setter
 	private String gender;
 
+	@Setter
 	private LocalDate birthDay;
 
+	@Setter
 	private String address;
+
+	@Setter
+	private boolean bpPublic = false;
+	@Setter
+	private boolean bsPublic = false;
+	@Setter
+	private boolean slPublic = false;
+	@Setter
+	private boolean wePublic = false;
+
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "family_id")
 	private Family family;
+
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Health> healthRecords = new ArrayList<>();
+
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<HealthComment> healthComments = new ArrayList<>();
 
 	@Builder
 	public Member(String provider, String verifyId, String username, String email, String password, Role role,
@@ -98,6 +134,5 @@ public class Member extends BaseEntity {
 
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
 	private List<CalendarEvent> calendarEvent = new ArrayList<>();
-
 
 }
