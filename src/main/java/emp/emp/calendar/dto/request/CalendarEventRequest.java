@@ -23,4 +23,6 @@ public class CalendarEventRequest {
 
   private LocalDateTime endDate;
 
+  private Integer priority;
+
 }

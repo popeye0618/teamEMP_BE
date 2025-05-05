@@ -38,4 +38,23 @@ public interface CalendarRepository extends JpaRepository<CalendarEvent, Long> {
    * @param end
    */
   List<CalendarEvent> findByMemberAndStartDateBetween(Member member, LocalDateTime start, LocalDateTime end);
+
+  /**
+   * 특정 날짜의 일정을 찾는 메서드
+   * @param start
+   * @param end
+   * @return
+   */
+  List<CalendarEvent> findByStartDateBetweenOrderByPriorityAsc(
+          LocalDateTime start, LocalDateTime end);
+
+  /**
+   * 특정 멤버의 특정 날짜 일정을 우선순위대로 정렬하여 찾는 메서드
+   * @param member
+   * @param start
+   * @param end
+   * @return
+   */
+  List<CalendarEvent> findByMemberAndStartDateBetweenOrderByPriorityAsc(
+          Member member, LocalDateTime start, LocalDateTime end);
 }

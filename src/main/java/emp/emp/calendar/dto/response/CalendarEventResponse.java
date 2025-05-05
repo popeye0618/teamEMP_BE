@@ -18,5 +18,6 @@ public class CalendarEventResponse {
   private String title;
   private LocalDateTime startDate;
   private LocalDateTime endDate;
+  private Integer priority;
 
 }

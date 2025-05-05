@@ -5,15 +5,13 @@ import emp.emp.calendar.enums.CalendarEventType;
 import emp.emp.member.entity.Member;
 import emp.emp.util.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -37,10 +35,13 @@ public class CalendarEvent extends BaseEntity {
 
   private LocalDateTime endDate;
 
+  private Integer priority;
+
   public void update(CalendarEventRequest request) {
     this.eventType = request.getEventType(); // enum 타입으로 매핑됨
     this.title = request.getTitle();
     this.startDate = request.getStartDate();
     this.endDate = request.getEndDate();
+    this.priority = request.getPriority();
   }
 }

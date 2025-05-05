@@ -4,6 +4,7 @@ import emp.emp.auth.custom.CustomUserDetails;
 import emp.emp.calendar.dto.request.CalendarEventRequest;
 import emp.emp.calendar.dto.response.CalendarEventResponse;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface CalendarService {
@@ -22,4 +23,10 @@ public interface CalendarService {
 
   // 회원의 전체 일정 조회
   List<CalendarEventResponse> getAllEvents(CustomUserDetails userDetails);
+
+  // 특정 날짜 일정 조회
+  List<CalendarEventResponse> getEventsByDate(CustomUserDetails userDetails, LocalDateTime date);
+
+  // 우선순위 업데이트
+  CalendarEventResponse updatePriority(CustomUserDetails userDetails, Long eventId, Integer priority);
 }

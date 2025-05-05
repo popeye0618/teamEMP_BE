@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,10 +35,11 @@ public class CalendarServiceImpl implements CalendarService {
 
     CalendarEvent calendarEvent = CalendarEvent.builder()
             .member(currentMember)
-            .eventType(request.getEventType())
+            .eventType(request.getEventType()) // 진료일정, 진료결과, 복약관리
             .title(request.getTitle())
             .startDate(request.getStartDate())
             .endDate(request.getEndDate())
+            .priority(request.getPriority())
             .build();
 
     calendarRepository.save(calendarEvent);
@@ -117,6 +119,45 @@ public class CalendarServiceImpl implements CalendarService {
   }
 
   /**
+   * 특정 날짜 일정 조회
+   * @param userDetails
+   * @param date
+   * @return
+   */
+  @Override
+  public List<CalendarEventResponse> getEventsByDate(CustomUserDetails userDetails, LocalDateTime date) {
+    Member currentMember = securityUtil.getCurrentMember();
+
+    // 해당 날짜의 시작과 끝 시간 설정
+    LocalDateTime startOfDay = date.toLocalDate().atStartOfDay();
+    LocalDateTime endOfDay = startOfDay.plusDays(1).minusNanos(1);
+
+    return calendarRepository.findByMemberAndStartDateBetweenOrderByPriorityAsc(
+                    currentMember, startOfDay, endOfDay)
+            .stream()
+            .map(this::toResponse)
+            .collect(Collectors.toList());
+  }
+
+  /**
+   * 우선순위 업데이트
+   * @param userDetails
+   * @param eventId
+   * @param priority
+   * @return
+   */
+  @Override
+  @Transactional
+  public CalendarEventResponse updatePriority(CustomUserDetails userDetails, Long eventId, Integer priority) {
+    Member currentMember = securityUtil.getCurrentMember();
+    CalendarEvent calendarEvent = findByIdAndValidate(eventId, currentMember);
+
+    calendarEvent.setPriority(priority);
+
+    return toResponse(calendarEvent);
+  }
+
+  /**
    * CalendarEvent 엔티티를 CalendarEventResponse DTO로 변환
    */
   private CalendarEventResponse toResponse(CalendarEvent calendarEvent) {
@@ -128,6 +169,7 @@ public class CalendarServiceImpl implements CalendarService {
             .title(calendarEvent.getTitle())
             .startDate(calendarEvent.getStartDate())
             .endDate(calendarEvent.getEndDate())
+            .priority(calendarEvent.getPriority())
             .build();
   }
 }

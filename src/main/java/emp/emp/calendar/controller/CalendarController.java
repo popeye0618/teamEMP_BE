@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -71,4 +72,29 @@ public class CalendarController {
   ) {
     return calendarService.getAllEvents(userDetails);
   }
+
+  /**
+   * 특정 날짜 일정 조회
+   */
+  @GetMapping("/date")
+  public List<CalendarEventResponse> getEventsByDate(
+          @AuthenticationPrincipal CustomUserDetails userDetails,
+          @RequestParam LocalDateTime date
+  ) {
+    return calendarService.getEventsByDate(userDetails, date);
+  }
+
+  /**
+   * 캘린더 일정 우선순위 업데이트
+   */
+  @PutMapping("/{eventId}/priority")
+  public CalendarEventResponse updatePriority(
+          @AuthenticationPrincipal CustomUserDetails userDetails,
+          @PathVariable Long eventId,
+          @RequestBody Integer priority
+  ) {
+    return calendarService.updatePriority(userDetails, eventId, priority);
+  }
+
+
 }
