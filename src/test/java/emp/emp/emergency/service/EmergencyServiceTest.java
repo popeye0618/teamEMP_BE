@@ -9,7 +9,10 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @SpringBootTest
@@ -26,6 +29,8 @@ public class EmergencyServiceTest {
 
             // emergencyClient에서 실제 데이터를 받아오는 방식 사용
             List<EmergencyRoomDTO> emergencyRoomDtos = emergencyService.getEmergencyRoomInformation(latitude, longitude);
+            List<EmergencyAedDTO> emergencyAedDTOS = emergencyService.getEmergencyAedInformation(latitude, longitude);
+
 
 
             System.out.println("===== EmergencyRoomDTO List Start =====");
@@ -33,12 +38,31 @@ public class EmergencyServiceTest {
                 System.out.println(roomDTO);
             }
             System.out.println("===== EmergencyRoomDTO List End =====");
+            System.out.println(" ");
+            System.out.println(" ");
+
+            System.out.println("===== EmergencyRoomDTO List Start =====");
+            for (EmergencyAedDTO aedDTO : emergencyAedDTOS) {
+                System.out.println(aedDTO);
+            }
+            System.out.println("===== EmergencyRoomDTO List End =====");
 
             Assertions.assertNotNull(emergencyRoomDtos); // Null 아님
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
+    @Test
+
+
+    void BothTest() throws IOException {
+        String latitude = "37.5665";
+        String longitude = "126.9780";
+
+        Map<String, Object> result = emergencyService.getCombinedEmergencyInfo(latitude, longitude);
+
+        Assertions.assertNotNull(result);
     }
 
 }

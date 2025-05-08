@@ -32,25 +32,25 @@ public class EmergencyService {
     }
 
 
-//    public List<EmergencyAedDTO> getEmergencyAedInformation(String userLatitude, String userLongitude) throws IOException {
-//        UserLocationDTO userLocationDTO = emergencyClient.GetUserLocation(userLatitude, userLongitude);
-//        return emergencyClient.GetEmergencyAedInformationApi(userLocationDTO);
-//    }
-//
-//
-//    public Map<String, Object> getCombinedEmergencyInfo(String userLatitude, String userLongitude) throws IOException {
-//        // 매개변수 그대로 사용: userLatitude, userLongitude
-//        UserLocationDTO userLocationDTO = emergencyClient.GetUserLocation(userLatitude, userLongitude);
-//
-//        List<EmergencyRoomDTO> emergencyRoomList = emergencyClient.GetEmergencyRoomInformationApi(userLocationDTO);
-//        List<EmergencyAedDTO> emergencyAedList = emergencyClient.GetEmergencyAedInformationApi(userLocationDTO);
-//
-//        Map<String, Object> result = new HashMap<>();
-//        result.put("emergencyRooms", emergencyRoomList);
-//        result.put("aedLocations", emergencyAedList);
-//
-//        return result;
-//    }`
+    public List<EmergencyAedDTO> getEmergencyAedInformation(String userLatitude, String userLongitude) throws IOException {
+        UserLocationDTO userLocationDTO = emergencyClient.GetUserLocation(userLatitude, userLongitude);
+        return emergencyClient.GetEmergencyAedInformationApi(userLocationDTO);
+    }
+
+
+    public Map<String, Object> getCombinedEmergencyInfo(String userLatitude, String userLongitude) throws IOException {
+        // 매개변수 그대로 사용: userLatitude, userLongitude
+        UserLocationDTO userLocationDTO = emergencyClient.GetUserLocation(userLatitude, userLongitude);
+
+        List<EmergencyRoomDTO> emergencyRoomList = emergencyClient.GetEmergencyRoomInformationApi(userLocationDTO);
+        List<EmergencyAedDTO> emergencyAedList = emergencyClient.GetEmergencyAedInformationApi(userLocationDTO);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("emergencyRooms", emergencyRoomList);
+        result.put("aedLocations", emergencyAedList);
+
+        return result;
+    }
 }
 
 
