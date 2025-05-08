@@ -26,7 +26,7 @@ public class EmergencyServiceTest {
 
             // emergencyClient에서 실제 데이터를 받아오는 방식 사용
             List<EmergencyRoomDTO> emergencyRoomDtos = emergencyService.getEmergencyRoomInformation(latitude, longitude);
-            List<EmergencyAedDTO> emergencyAedDTOS = emergencyService.getEmergencyAedInformation(latitude, longitude);
+
 
             System.out.println("===== EmergencyRoomDTO List Start =====");
             for (EmergencyRoomDTO roomDTO : emergencyRoomDtos) {

@@ -1383,23 +1383,23 @@ public class EmergencyClientTest {
         }
 
 
-        @Test
-        void testGetEmergencyAedInformationApi() throws IOException {
-            // 테스트용 사용자 위치
-            UserLocationDTO location = new UserLocationDTO().builder()
-                    .sido("서울특별시")
-                    .sigungu("종로구")
-                    .build();
-
-            List<EmergencyAedDTO> emergencyAed = emergencyClient.GetEmergencyAedInformationApi(location);
-            System.out.println("========================================");
-            for (EmergencyAedDTO dto : emergencyAed) {
-                System.out.println(dto);
-            }
-            System.out.println("========================================");
-
-            Assertions.assertNotNull(emergencyAed);
-        }
+//        @Test
+//        void testGetEmergencyAedInformationApi() throws IOException {
+//            // 테스트용 사용자 위치
+//            UserLocationDTO location = new UserLocationDTO().builder()
+//                    .sido("서울특별시")
+//                    .sigungu("종로구")
+//                    .build();
+//
+//            List<EmergencyAedDTO> emergencyAed = emergencyClient.GetEmergencyAedInformationApi(location);
+//            System.out.println("========================================");
+//            for (EmergencyAedDTO dto : emergencyAed) {
+//                System.out.println(dto);
+//            }
+//            System.out.println("========================================");
+//
+//            Assertions.assertNotNull(emergencyAed);
+//        }
 
 }
 

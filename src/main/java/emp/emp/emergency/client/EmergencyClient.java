@@ -71,37 +71,37 @@ public class EmergencyClient {
     // 9katrQUAyXDMZdQbJbRGbsPcK5u9PHVP3uyhr5oRBWOhNVYpE2J8TDjxr4eo%2F8qSQzwaa6nxunRdVP14ILSK1A%3D%3D
 
 
-    public List<EmergencyAedDTO> GetEmergencyAedInformationApi(UserLocationDTO userLocationDTO) throws IOException {
-        StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B552657/AEDInfoInqireService/getEgytAedManageInfoInqire"); /*URL*/
-        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=9katrQUAyXDMZdQbJbRGbsPcK5u9PHVP3uyhr5oRBWOhNVYpE2J8TDjxr4eo%2F8qSQzwaa6nxunRdVP14ILSK1A%3D%3D"); /*Service Key*/
-        urlBuilder.append("&" + URLEncoder.encode("pageNo", "UTF-8") + "=" + URLEncoder.encode("1", "UTF-8"));
-        urlBuilder.append("&" + URLEncoder.encode("numOfRows", "UTF-8") + "=" + URLEncoder.encode("10", "UTF-8"));
-        urlBuilder.append("&" + URLEncoder.encode("Q0", "UTF-8") + "=" + URLEncoder.encode(userLocationDTO.getSido(), "UTF-8"));
-        urlBuilder.append("&" + URLEncoder.encode("Q1", "UTF-8") + "=" + URLEncoder.encode(userLocationDTO.getSigungu(), "UTF-8"));
-        URL url = new URL(urlBuilder.toString());
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-        conn.setRequestProperty("Content-type", "application/json");
-        System.out.println("Response code: " + conn.getResponseCode());
-        BufferedReader rd;
-        if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
-            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        } else {
-            rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
-        }
-        StringBuilder sb = new StringBuilder();
-        String line;
-        while ((line = rd.readLine()) != null) {
-            sb.append(line);
-        }
-        rd.close();
-        conn.disconnect();
-
-        List<EmergencyAedDTO> emergencyAeds = EmergencyAedXmlParser.parse(sb.toString());
-
-
-        return emergencyAeds;
-    }
+//    public List<EmergencyAedDTO> GetEmergencyAedInformationApi(UserLocationDTO userLocationDTO) throws IOException {
+//        StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B552657/AEDInfoInqireService/getEgytAedManageInfoInqire"); /*URL*/
+//        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=9katrQUAyXDMZdQbJbRGbsPcK5u9PHVP3uyhr5oRBWOhNVYpE2J8TDjxr4eo%2F8qSQzwaa6nxunRdVP14ILSK1A%3D%3D"); /*Service Key*/
+//        urlBuilder.append("&" + URLEncoder.encode("pageNo", "UTF-8") + "=" + URLEncoder.encode("1", "UTF-8"));
+//        urlBuilder.append("&" + URLEncoder.encode("numOfRows", "UTF-8") + "=" + URLEncoder.encode("10", "UTF-8"));
+//        urlBuilder.append("&" + URLEncoder.encode("Q0", "UTF-8") + "=" + URLEncoder.encode(userLocationDTO.getSido(), "UTF-8"));
+//        urlBuilder.append("&" + URLEncoder.encode("Q1", "UTF-8") + "=" + URLEncoder.encode(userLocationDTO.getSigungu(), "UTF-8"));
+//        URL url = new URL(urlBuilder.toString());
+//        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+//        conn.setRequestMethod("GET");
+//        conn.setRequestProperty("Content-type", "application/json");
+//        System.out.println("Response code: " + conn.getResponseCode());
+//        BufferedReader rd;
+//        if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
+//            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+//        } else {
+//            rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+//        }
+//        StringBuilder sb = new StringBuilder();
+//        String line;
+//        while ((line = rd.readLine()) != null) {
+//            sb.append(line);
+//        }
+//        rd.close();
+//        conn.disconnect();
+//
+//        List<EmergencyAedDTO> emergencyAeds = EmergencyAedXmlParser.parse(sb.toString());
+//
+//
+//        return emergencyAeds;
+//    }
 
 
 

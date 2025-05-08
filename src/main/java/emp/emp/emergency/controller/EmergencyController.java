@@ -46,46 +46,46 @@ public class EmergencyController {
     }
 
 
-    @GetMapping("/api/emergency/room")
-    public ResponseEntity<List<EmergencyAedDTO>> emergencyAed(
-            @RequestParam String userLatitude,
-            @RequestParam String userLongitude,
-            @AuthenticationPrincipal CustomUserDetails userDetails) throws IOException, JAXBException {
-
-        try {
-            List<EmergencyAedDTO> emergencyAed = emergencyService.getEmergencyAedInformation(userLatitude, userLongitude);
-
-            if (emergencyAed.isEmpty()) {
-                // 데이터가 없을 경우 204 No Content 반환
-                return ResponseEntity.noContent().build();
-            }
-
-            // 성공적으로 데이터를 가져왔을 경우 200 OK와 함께 데이터 반환
-            return ResponseEntity.ok(emergencyAed);
-        } catch (Exception e) {
-            // 예외 발생 시 500 Internal Server Error 반환
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
-    @GetMapping("/api/emergency/room")
-    public ResponseEntity<Map<String, Object>> emergencyAedAndRoom(
-            @RequestParam String userLatitude,
-            @RequestParam String userLongitude,
-            @AuthenticationPrincipal CustomUserDetails userDetails) throws IOException, JAXBException {
-
-        try {
-            Map<String, Object> result = emergencyService.getCombinedEmergencyInfo(userLatitude, userLongitude);
-            if (result.isEmpty()) {
-                // 데이터가 없을 경우 204 No Content 반환
-                return ResponseEntity.noContent().build();
-            }
-
-            // 성공적으로 데이터를 가져왔을 경우 200 OK와 함께 데이터 반환
-            return ResponseEntity.ok(result);
-        } catch (Exception e) {
-            // 예외 발생 시 500 Internal Server Error 반환
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
+//    @GetMapping("/api/emergency/room")
+//    public ResponseEntity<List<EmergencyAedDTO>> emergencyAed(
+//            @RequestParam String userLatitude,
+//            @RequestParam String userLongitude,
+//            @AuthenticationPrincipal CustomUserDetails userDetails) throws IOException, JAXBException {
+//
+//        try {
+//            List<EmergencyAedDTO> emergencyAed = emergencyService.getEmergencyAedInformation(userLatitude, userLongitude);
+//
+//            if (emergencyAed.isEmpty()) {
+//                // 데이터가 없을 경우 204 No Content 반환
+//                return ResponseEntity.noContent().build();
+//            }
+//
+//            // 성공적으로 데이터를 가져왔을 경우 200 OK와 함께 데이터 반환
+//            return ResponseEntity.ok(emergencyAed);
+//        } catch (Exception e) {
+//            // 예외 발생 시 500 Internal Server Error 반환
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//        }
+//    }
+//
+//    @GetMapping("/api/emergency/room")
+//    public ResponseEntity<Map<String, Object>> emergencyAedAndRoom(
+//            @RequestParam String userLatitude,
+//            @RequestParam String userLongitude,
+//            @AuthenticationPrincipal CustomUserDetails userDetails) throws IOException, JAXBException {
+//
+//        try {
+//            Map<String, Object> result = emergencyService.getCombinedEmergencyInfo(userLatitude, userLongitude);
+//            if (result.isEmpty()) {
+//                // 데이터가 없을 경우 204 No Content 반환
+//                return ResponseEntity.noContent().build();
+//            }
+//
+//            // 성공적으로 데이터를 가져왔을 경우 200 OK와 함께 데이터 반환
+//            return ResponseEntity.ok(result);
+//        } catch (Exception e) {
+//            // 예외 발생 시 500 Internal Server Error 반환
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//        }
+//    }
 }
