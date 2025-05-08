@@ -13,16 +13,16 @@ public class EmergencyRoomXmlParser {
             String itemXml = items[i];
             EmergencyRoomDTO dto = new EmergencyRoomDTO();
 
-            dto.setDutyName(getTagValue(itemXml, "dutyName"));
-            dto.setDutytel3(getTagValue(itemXml, "dutyTel3"));
-            dto.setHvmriayn("Y".equals(getTagValue(itemXml, "hvmriayn")));
-            dto.setHvctayn("Y".equals(getTagValue(itemXml, "hvctayn")));
+            dto.setHospitalName(getTagValue(itemXml, "dutyName"));
+            dto.setHospitalTel(getTagValue(itemXml, "dutyTel3"));
+            dto.setMriAvailable("Y".equals(getTagValue(itemXml, "hvmriayn")));
+            dto.setCtAvailable("Y".equals(getTagValue(itemXml, "hvctayn")));
 
             String hvecStr = getTagValue(itemXml, "hvec");
             try {
-                dto.setHvec(Integer.parseInt(hvecStr));
+                dto.setEmergencyBedCount(Integer.parseInt(hvecStr));
             } catch (NumberFormatException e) {
-                dto.setHvec(0); // 값이 이상할 경우 0으로 설정
+                dto.setEmergencyBedCount(0); // 값이 이상할 경우 0으로 설정
             }
 
             // hospitalLatitude, hospitalLongitude는 XML에 없으니 임시로 0.0
