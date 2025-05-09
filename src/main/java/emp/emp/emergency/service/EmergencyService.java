@@ -38,6 +38,8 @@ public class EmergencyService {
     }
 
 
+
+
     public Map<String, Object> getCombinedEmergencyInfo(String userLatitude, String userLongitude) throws IOException {
         // 매개변수 그대로 사용: userLatitude, userLongitude
         UserLocationDTO userLocationDTO = emergencyClient.GetUserLocation(userLatitude, userLongitude);
