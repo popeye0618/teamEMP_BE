@@ -1,6 +1,7 @@
 package emp.emp.treatmentSchedule.entity;
 
 import emp.emp.calendar.entity.CalendarEvent;
+import emp.emp.member.entity.Member;
 import emp.emp.treatmentSchedule.dto.request.TreatmentScheduleRequest;
 import emp.emp.util.BaseEntity;
 import jakarta.persistence.*;
