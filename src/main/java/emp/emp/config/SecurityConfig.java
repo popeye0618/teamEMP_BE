@@ -39,6 +39,7 @@ public class SecurityConfig {
 		"/api/register",
 		"/api/login",
 		"/api/token/**"
+//		"/api/emergency/**"
 	);
 
 	private final CustomOAuth2UserService customOAuth2UserService;

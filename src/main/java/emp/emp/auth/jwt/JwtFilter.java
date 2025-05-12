@@ -34,6 +34,9 @@ public class JwtFilter extends OncePerRequestFilter {
 		"/api/login",
 		"/api/token/exchange",
 		"/api/token/refresh"
+//		"/api/emergency/room",
+//		"/api/emergency/aed",
+//		"/api/emergency/both"
 	);
 	private final JwtTokenProvider jwtTokenProvider;
 
