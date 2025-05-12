@@ -48,6 +48,7 @@ public class EmergencyController {
     }
 
 
+
     @GetMapping("/api/emergency/aed")
     public ResponseEntity<List<EmergencyAedDTO>> emergencyAed(
             @RequestParam String userLatitude,
