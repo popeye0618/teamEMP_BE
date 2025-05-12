@@ -21,6 +21,11 @@ public class HealthController {
 
 	private final HealthService healthService;
 
+	/**
+	 * 건강 정보 등록
+	 * @param request
+	 * @return
+	 */
 	@PostMapping("/health")
 	public ResponseEntity<Response<Void>> record(@RequestBody HealthRecordReq request) {
 		healthService.recordHealth(request);
@@ -28,6 +33,16 @@ public class HealthController {
 		return Response.ok().toResponseEntity();
 	}
 
+
+	/**
+	 * 주간 건강 정보 조회
+	 * @param verifyId
+	 * @param year
+	 * @param month
+	 * @param week
+	 * @param type
+	 * @return
+	 */
 	@GetMapping("/health/weekly/{verifyId}/{year}/{month}/{week}/{type}")
 	public HealthRecordRes getWeeklyRecords(
 		@PathVariable String verifyId,
@@ -39,6 +54,14 @@ public class HealthController {
 		return healthService.getWeeklyHealthRecords(verifyId, year, month, week, type);
 	}
 
+	/**
+	 * 월간 건강 정보 조회
+	 * @param verifyId
+	 * @param year
+	 * @param month
+	 * @param type
+	 * @return
+	 */
 	@GetMapping("/health/weekly/{verifyId}/{year}/{month}/{type}")
 	public HealthRecordRes getMonthlyRecords(
 		@PathVariable String verifyId,
