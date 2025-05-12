@@ -33,7 +33,6 @@ public class HealthController {
 		return Response.ok().toResponseEntity();
 	}
 
-
 	/**
 	 * 주간 건강 정보 조회
 	 * @param verifyId
