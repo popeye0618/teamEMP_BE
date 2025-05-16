@@ -21,4 +21,15 @@ public class S3Config {
     private String region; // 리전 (지역)
 
 
+    @Bean
+    public S3Client s3Client() {
+        // aws 기본 인증 객체
+        AwsBasicCredentials credentials = AwsBasicCredentials.create(accessKey, secretKey);
 
+        // aws s3에 접근할 수 있는 클라이언트 객체
+        return S3Client.builder()
+                .region(Region.of(region)) // 지역
+                .credentialsProvider(StaticCredentialsProvider.create(credentials)) // S3Client에 인증 키를 전달
+                .build();
+    }
+}
