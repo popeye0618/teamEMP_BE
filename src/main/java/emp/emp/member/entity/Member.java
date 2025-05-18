@@ -85,6 +85,9 @@ public class Member extends BaseEntity {
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<HealthComment> healthComments = new ArrayList<>();
 
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<HealthTag> healthTags = new ArrayList<>();
+
 	@Builder
 	public Member(String provider, String verifyId, String username, String email, String password, Role role,
 		String gender, LocalDate birthDay, String address) {
@@ -134,5 +137,9 @@ public class Member extends BaseEntity {
 
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
 	private List<CalendarEvent> calendarEvent = new ArrayList<>();
+
+	public void addHealthTag(HealthTag healthTag) {
+		healthTags.add(healthTag);
+	}
 
 }
