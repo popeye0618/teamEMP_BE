@@ -1,4 +1,4 @@
-package emp.emp.community.entity;
+package emp.emp.community.enums;
 
 public enum PostType {
     QUESTION,
