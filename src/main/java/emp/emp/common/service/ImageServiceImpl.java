@@ -5,7 +5,7 @@ import emp.emp.common.entity.Image;
 import emp.emp.common.repository.ImageRepository;
 import emp.emp.exception.BusinessException;
 import emp.emp.medical.exception.MedicalResultErrorCode;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -73,8 +73,37 @@ public class ImageServiceImpl implements ImageService {
 
   }
 
+  /**
+   * 이미지 조회
+   * @param imageId
+   * @return 조회한 이미지의 정보
+   */
+  @Override
+  @Transactional(readOnly = true)
+  public ImageDto getImage(Long imageId) {
+    // 이미지Entity 조회
+    Image image = getImageEntity(imageId);
 
+    // DTO로 변환하여 반환
+    return convertToDto(image);
+  }
 
+  /**
+   * 이미지Entity 조회
+   * @param imageId
+   * @return 이미지 엔티티
+   */
+  @Override
+  @Transactional(readOnly = true)
+  public Image getImageEntity(Long imageId) {
+    return imageRepository.findById(imageId).orElseThrow(() -> new BusinessException(MedicalResultErrorCode.IMAGE_NOT_FOUND));
+  }
+
+  /**
+   * 이미지Entity를 DTO로 변환
+   * @param image
+   * @return 이미지DTO
+   */
   private ImageDto convertToDto(Image image){
     return ImageDto.builder()
             .imageId(image.getImageId())
