@@ -37,4 +37,12 @@ public class ImageController {
     return Response.ok(imageDto).toResponseEntity();
   }
 
+  @DeleteMapping("/{imageId}")
+  public ResponseEntity<Response<Void>> deleteImage(
+          @AuthenticationPrincipal CustomUserDetails userDetails,
+          @PathVariable Long imageId
+  ){
+    imageService.deleteImage(imageId);
+    return  Response.ok().toResponseEntity();
+  }
 }
