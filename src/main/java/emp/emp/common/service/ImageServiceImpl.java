@@ -88,6 +88,20 @@ public class ImageServiceImpl implements ImageService {
     return convertToDto(image);
   }
 
+  @Override
+  @Transactional
+  public void deleteImage(Long imageId) {
+    // 이미지Entity 조회
+    Image image = getImageEntity(imageId);
+
+    try{
+      // DB에서 삭제
+      imageRepository.delete(image);
+    }catch(Exception e){
+      throw new BusinessException(MedicalResultErrorCode. DATABASE_ERROR);
+    }
+  }
+
   /**
    * 이미지Entity 조회
    * @param imageId
