@@ -24,6 +24,12 @@ public interface ImageService {
   ImageDto getImage(Long imageId);
 
   /**
+   * 이미지 삭제
+   * @param imageId
+   */
+  void deleteImage(Long imageId);
+
+  /**
    * 이미지Entity 조회
    * @param imageId
    * @return
