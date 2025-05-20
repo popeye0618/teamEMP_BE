@@ -9,7 +9,7 @@ public class MedicalResultRequest {
 
   private String memo;
   private Long prescriptionImageId;
-  private Long medicalImageId;
+  private Long  medicineImageId;
   private boolean isPublic;
 
 }

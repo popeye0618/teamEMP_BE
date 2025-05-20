@@ -18,7 +18,7 @@ public class MedicalResultResponse {
   private LocalDateTime startDate;
   private LocalDateTime endDate;
   private ImageDto prescriptionImage; // 처방전이미지 정보
-  private ImageDto medicalImage; // 약 이미지 정보
+  private ImageDto medicineImage; // 약 이미지 정보
   private boolean isPublic;
 
 }
