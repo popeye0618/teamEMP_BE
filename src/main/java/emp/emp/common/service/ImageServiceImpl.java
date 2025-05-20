@@ -88,6 +88,10 @@ public class ImageServiceImpl implements ImageService {
     return convertToDto(image);
   }
 
+  /**
+   * 이미지 삭제
+   * @param imageId
+   */
   @Override
   @Transactional
   public void deleteImage(Long imageId) {
