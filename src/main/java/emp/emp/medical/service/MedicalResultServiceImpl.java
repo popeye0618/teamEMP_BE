@@ -30,6 +30,13 @@ public class MedicalResultServiceImpl implements MedicalResultService {
   private final ImageService imageService;
 
 
+  /**
+   * 진료 결과 등록
+   * @param userDetails 인증된 사용자의 정보
+   * @param eventId 캘린더 이벤트 시퀀스 Id
+   * @param request 진료결과 등록 요청 데이터
+   * @return
+   */
   @Override
   @Transactional
   public MedicalResultResponse createMedicalResult(CustomUserDetails userDetails, Long eventId, MedicalResultRequest request){
@@ -84,6 +91,19 @@ public class MedicalResultServiceImpl implements MedicalResultService {
     }catch(Exception e){
       throw new BusinessException(MedicalResultErrorCode.DATABASE_ERROR);
     }
+  }
+
+  /**
+   * 진료 결과 조회
+   * @param userDetails 인증된 사용자의 정보
+   * @param eventId  캘린더 이벤트 시퀀스 Id
+   * @return
+   */
+  @Override
+  @Transactional(readOnly = true)
+  public MedicalResultResponse getMedicalResult(CustomUserDetails userDetails, Long eventId) {
+
+    return null;
   }
 
 
