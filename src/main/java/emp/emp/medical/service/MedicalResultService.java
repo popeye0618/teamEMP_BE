@@ -16,7 +16,7 @@ public interface MedicalResultService {
   MedicalResultResponse createMedicalResult(CustomUserDetails userDetails, Long eventId, MedicalResultRequest request);
 
   /**
-   * 진료 결과 조회
+   * 진료 결과( medical_result) 조회
    * @param userDetails 인증된 사용자의 정보
    * @param eventId  캘린더 이벤트 시퀀스 Id
    * @return 진료 결과 정보

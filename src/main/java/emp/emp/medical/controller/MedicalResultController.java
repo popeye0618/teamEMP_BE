@@ -34,4 +34,20 @@ public class MedicalResultController {
     return Response.ok(response).toResponseEntity();
   }
 
+  /**
+   * 진료결과 조회
+   * @param userDetails 인증된 사용자 정보
+   * @param eventId 캘린더 이벤트 신퀀스 ID
+   * @return 진료 결과 정보
+   */
+  @GetMapping("/{eventId}")
+  public ResponseEntity<Response<MedicalResultResponse>> getMedicalResult(
+          @AuthenticationPrincipal CustomUserDetails userDetails,
+          @PathVariable Long eventId
+  ) {
+    MedicalResultResponse response = medicalResultService.getMedicalResult(userDetails, eventId);
+    return Response.ok(response).toResponseEntity();
+  }
+
+
 }

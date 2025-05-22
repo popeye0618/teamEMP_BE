@@ -94,7 +94,7 @@ public class MedicalResultServiceImpl implements MedicalResultService {
   }
 
   /**
-   * 진료 결과 조회
+   * 진료 결과( medical_result) 조회
    * @param userDetails 인증된 사용자의 정보
    * @param eventId  캘린더 이벤트 시퀀스 Id
    * @return
@@ -102,8 +102,26 @@ public class MedicalResultServiceImpl implements MedicalResultService {
   @Override
   @Transactional(readOnly = true)
   public MedicalResultResponse getMedicalResult(CustomUserDetails userDetails, Long eventId) {
+      try{
+        Member currentMember = securityUtil.getCurrentMember();
 
-    return null;
+        CalendarEvent calendarEvent = findEventByIdAndValidate(eventId, currentMember);
+
+        validateEventType(calendarEvent);
+
+        // 진료 결과 조회
+        MedicalResult medicalResult = medicalResultRepository.findByCalendarEvent(calendarEvent)
+                .orElseThrow(() -> new BusinessException(MedicalResultErrorCode.MEDICAL_RESULT_NOT_FOUND));
+
+        return convertToDto(medicalResult);
+
+      } catch(BusinessException e){
+        throw e;
+      }catch(Exception e){
+        throw new BusinessException(MedicalResultErrorCode.DATABASE_ERROR);
+      }
+
+
   }
 
 
