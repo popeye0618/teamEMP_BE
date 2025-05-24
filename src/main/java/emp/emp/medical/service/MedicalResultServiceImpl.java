@@ -120,8 +120,58 @@ public class MedicalResultServiceImpl implements MedicalResultService {
       }catch(Exception e){
         throw new BusinessException(MedicalResultErrorCode.DATABASE_ERROR);
       }
+  }
 
+  /**
+   * 진료결과 수정
+   * @param userDetails 인증된 사용자의 정보
+   * @param eventId 캘린더 이벤트 시퀀스 Id
+   * @param request 진료 결과 수정 요청 데이터
+   * @return
+   */
+  @Override
+  @Transactional
+  public MedicalResultResponse updateMedicalResult(CustomUserDetails userDetails, Long eventId, MedicalResultRequest request){
 
+    try{
+      Member currentMember = securityUtil.getCurrentMember();
+
+      CalendarEvent calendarEvent = findEventByIdAndValidate(eventId, currentMember);
+
+      validateEventType(calendarEvent);
+
+      MedicalResult medicalResult = medicalResultRepository.findByCalendarEvent(calendarEvent)
+              .orElseThrow(() -> new BusinessException(MedicalResultErrorCode.MEDICAL_RESULT_NOT_FOUND));
+
+      // 메모 업데이트
+      medicalResult.setMemo(request.getMemo());
+
+      // 공개 여부 업데이트
+      medicalResult.setPublic(request.isPublic());
+
+      // 처방전 이미지 업데아트
+      if(request.getPrescriptionImageId() != null){
+        Image prescriptionImage = imageService.getImageEntity(request.getPrescriptionImageId());
+        medicalResult.setPrescriptionImage(prescriptionImage);
+      } else{
+        medicalResult.setPrescriptionImage(null);
+      }
+
+      // 약 이미지 업데이트
+      if(request.getMedicineImageId() != null){
+        Image medicineImage = imageService.getImageEntity(request.getMedicineImageId());
+        medicalResult.setMedicineImage(medicineImage);
+      }else{
+        medicalResult.setMedicineImage(null);
+      }
+
+      return convertToDto(medicalResult);
+
+    }catch(BusinessException e){
+      throw e;
+    } catch(Exception e){
+      throw new BusinessException(MedicalResultErrorCode.DATABASE_ERROR);
+    }
   }
 
 
