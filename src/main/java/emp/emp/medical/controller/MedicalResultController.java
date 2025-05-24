@@ -49,5 +49,21 @@ public class MedicalResultController {
     return Response.ok(response).toResponseEntity();
   }
 
+  /**
+   * 진료 결과 수정
+   * @param userDetails 인증된 사용자의 정보
+   * @param eventId 캘린더 이벤트 시퀀스 ID
+   * @param request 진료 결과 수정 요청 데이터
+   * @return 수정된 진료 결과 정보
+   */
+  @PutMapping("/{eventId}")
+  public ResponseEntity<Response<MedicalResultResponse>> updateMedicalResult(
+          @AuthenticationPrincipal CustomUserDetails userDetails,
+          @PathVariable Long eventId,
+          @RequestBody MedicalResultRequest request
+  ) {
+    MedicalResultResponse response = medicalResultService.updateMedicalResult(userDetails, eventId, request);
+    return Response.ok(response).toResponseEntity();
+  }
 
 }
