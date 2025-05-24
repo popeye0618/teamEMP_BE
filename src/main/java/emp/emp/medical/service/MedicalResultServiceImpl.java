@@ -174,30 +174,6 @@ public class MedicalResultServiceImpl implements MedicalResultService {
     }
   }
 
-  @Override
-  @Transactional
-  public MedicalResultResponse updateIsPublic(CustomUserDetails userDetails, Long eventId, boolean isPublic) {
-    try{
-      Member currentMember = securityUtil.getCurrentMember();
-
-      CalendarEvent calendarEvent = findEventByIdAndValidate(eventId, currentMember);
-
-      validateEventType(calendarEvent);
-
-      MedicalResult medicalResult = medicalResultRepository.findByCalendarEvent(calendarEvent)
-              .orElseThrow(() -> new BusinessException(MedicalResultErrorCode.MEDICAL_RESULT_NOT_FOUND));
-
-      medicalResult.setPublic(isPublic);
-
-      return convertToDto(medicalResult);
-
-    }catch (BusinessException e) {
-      throw e;
-    } catch(Exception e){
-      throw new BusinessException(MedicalResultErrorCode.DATABASE_ERROR);
-    }
-  }
-
 
   // =====================================================================
 

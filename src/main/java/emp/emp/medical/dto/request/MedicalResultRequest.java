@@ -10,6 +10,10 @@ public class MedicalResultRequest {
   private String memo;
   private Long prescriptionImageId;
   private Long  medicineImageId;
-  private boolean isPublic;
+  private Boolean isPublic;
+
+  public boolean isPublic() {
+    return isPublic != null ? isPublic : false;
+  }
 
 }

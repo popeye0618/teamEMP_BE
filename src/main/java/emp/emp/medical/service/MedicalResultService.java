@@ -32,14 +32,4 @@ public interface MedicalResultService {
    */
   MedicalResultResponse updateMedicalResult(CustomUserDetails userDetails, Long eventId, MedicalResultRequest request);
 
-  /**
-   * 진료결과 공개 여부 설정
-   * @param userDetails 인증된 사용자의 정보
-   * @param eventId 캘린더 이벤트 시퀀스 Id
-   * @param isPublic 공개 여부
-   * @return
-   */
-  MedicalResultResponse updateIsPublic(CustomUserDetails userDetails, Long eventId, boolean isPublic);
-
-
 }
