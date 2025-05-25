@@ -15,6 +15,6 @@ public class Like {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
-    private PostEntity post;
+    private Post post;
 
 }

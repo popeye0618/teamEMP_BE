@@ -1,6 +1,8 @@
 package emp.emp.community.entity;
 
 
+import emp.emp.community.enums.HealthCategory;
+import emp.emp.community.enums.PostType;
 import emp.emp.member.entity.Member;
 import emp.emp.util.BaseEntity;
 import jakarta.persistence.*;
@@ -26,13 +28,18 @@ public class Post extends BaseEntity {
     private String bodyText;
 
     @Column(name = "post_type", nullable = false)
-    private String postType;
+    @Enumerated(value = EnumType.STRING)
+    private PostType postType;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
 
-    // 좋아요 어케하지
+    @Column(name = "health_category", nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private HealthCategory healthCategory;
+
+    // 좋아요는 수치 저장은 따로 안함
 
 
 
