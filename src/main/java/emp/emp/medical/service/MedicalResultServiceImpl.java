@@ -9,6 +9,7 @@ import emp.emp.common.entity.Image;
 import emp.emp.common.service.ImageService;
 import emp.emp.exception.BusinessException;
 import emp.emp.medical.dto.request.MedicalResultRequest;
+import emp.emp.medical.dto.response.FamilyMedicalResultResponse;
 import emp.emp.medical.dto.response.MedicalResultResponse;
 import emp.emp.medical.entity.MedicalResult;
 import emp.emp.medical.exception.MedicalResultErrorCode;
@@ -22,6 +23,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -212,6 +218,111 @@ public class MedicalResultServiceImpl implements MedicalResultService {
     }
   }
 
+  /**
+   * 가족 구성원의 공개된 진료결과 조회
+   * @param userDetails 인증된 사용자의  정보
+   * @return 가족 구성원의 공개된 진료 결과 목록
+   */
+  @Override
+  @Transactional(readOnly = true)
+  public List<FamilyMedicalResultResponse> getFamilyMedicalResult(CustomUserDetails userDetails) {
+    try {
+      Member currentMember = securityUtil.getCurrentMember();
+
+      if (currentMember == null) {
+        throw new BusinessException(MedicalResultErrorCode.ACCESS_DENIED);
+      }
+
+      // 가족 정보 확인
+      if (currentMember.getFamily() == null) {
+        throw new BusinessException(MedicalResultErrorCode.FAMILY_NOT_FOUND);
+      }
+
+      // 가족 구성원들의 공개된 진료 결과 조회 (본인 제외)
+      List<MedicalResult> familyResults = medicalResultRepository
+              .findByMemberFamilyIdAndIsPublicTrueAndMemberIdNot(
+                      currentMember.getFamily().getId(),
+                      currentMember.getId()
+              );
+
+      if (familyResults == null || familyResults.isEmpty()) {
+        return new ArrayList<>();
+      }
+
+      return familyResults.stream()
+              .filter(Objects::nonNull)  // null 체크
+              .map(this::convertToFamilyDto)
+              .filter(Objects::nonNull)  // 변환 결과도 null 체크
+              .collect(Collectors.toList());
+
+    } catch (BusinessException e) {
+      throw e;
+    } catch (Exception e) {
+      throw new BusinessException(MedicalResultErrorCode.DATABASE_ERROR);
+    }
+  }
+
+  /**
+   * MedicalResult Entity FamilyMedicalResultResponse DTO로 변환
+   * @param medicalResult 변환할 진료 결과 엔티티
+   * @return 변환된 DTO
+   */
+  private FamilyMedicalResultResponse convertToFamilyDto(MedicalResult medicalResult) {
+    if (medicalResult == null) {
+      return null;
+    }
+
+    // 캘린더 이벤트 정보져오기
+    CalendarEvent calendarEvent = medicalResult.getCalendarEvent();
+    if (calendarEvent == null) {
+      throw new BusinessException(MedicalResultErrorCode.CALENDAR_EVENT_NOT_FOUND);
+    }
+
+    // 회원 정보가져오기
+    Member member = medicalResult.getMember();
+    if (member == null) {
+      throw new BusinessException(MedicalResultErrorCode.ACCESS_DENIED);
+    }
+
+    // 처방전 이미지 정보 변환
+    ImageDto prescriptionImageDto = null;
+    if (medicalResult.getPrescriptionImage() != null) {
+      Image image = medicalResult.getPrescriptionImage();
+      prescriptionImageDto = ImageDto.builder()
+              .imageId(image.getImageId())
+              .fileName(image.getFileName())
+              .filePath(image.getFilePath())
+              .fileSize(image.getFileSize())
+              .contentType(image.getContentType())
+              .build();
+    }
+
+    // 약 이미지 정보 변환
+    ImageDto medicineImageDto = null;
+    if (medicalResult.getMedicineImage() != null) {
+      Image image = medicalResult.getMedicineImage();
+      medicineImageDto = ImageDto.builder()
+              .imageId(image.getImageId())
+              .fileName(image.getFileName())
+              .filePath(image.getFilePath())
+              .fileSize(image.getFileSize())
+              .contentType(image.getContentType())
+              .build();
+    }
+
+    // 가족 공유 진료 결과 응답 DTO 생성 및 반환
+    return FamilyMedicalResultResponse.builder()
+            .resultId(medicalResult.getResultId())
+            .eventId(calendarEvent.getEventId())
+            .memberName(member.getUsername())
+            .title(calendarEvent.getTitle())
+            .memo(medicalResult.getMemo())
+            .startDate(calendarEvent.getStartDate())
+            .endDate(calendarEvent.getEndDate())
+            .prescriptionImage(prescriptionImageDto)
+            .medicineImage(medicineImageDto)
+            .build();
+  }
 
   // =====================================================================
 

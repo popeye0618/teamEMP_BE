@@ -2,6 +2,7 @@ package emp.emp.medical.controller;
 
 import emp.emp.auth.custom.CustomUserDetails;
 import emp.emp.medical.dto.request.MedicalResultRequest;
+import emp.emp.medical.dto.response.FamilyMedicalResultResponse;
 import emp.emp.medical.dto.response.MedicalResultResponse;
 import emp.emp.medical.service.MedicalResultService;
 import emp.emp.util.api_response.Response;
@@ -9,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth/user/medical-results")
@@ -79,6 +82,19 @@ public class MedicalResultController {
   ) {
     medicalResultService.deleteMedicalResult(userDetails, eventId);
     return Response.ok().toResponseEntity();
+  }
+
+  /**
+   * 가족 구성원의 공개된 진료결과 조회
+   * @param userDetails
+   * @return
+   */
+  @GetMapping("/family")
+  public ResponseEntity<Response<List<FamilyMedicalResultResponse>>> getFamilyMedicalResults(
+          @AuthenticationPrincipal CustomUserDetails userDetails
+  ) {
+    List<FamilyMedicalResultResponse> response = medicalResultService.getFamilyMedicalResult(userDetails);
+    return Response.ok(response).toResponseEntity();
   }
 
 }
