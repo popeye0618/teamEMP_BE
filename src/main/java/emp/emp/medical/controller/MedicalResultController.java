@@ -66,4 +66,19 @@ public class MedicalResultController {
     return Response.ok(response).toResponseEntity();
   }
 
+  /**
+   * 진료 결과 삭제
+   * @param userDetails
+   * @param eventId
+   * @return
+   */
+  @DeleteMapping("/{eventId}")
+  public ResponseEntity<Response<Void>> deleteMedicalResult(
+          @AuthenticationPrincipal CustomUserDetails userDetails,
+          @PathVariable Long eventId
+  ) {
+    medicalResultService.deleteMedicalResult(userDetails, eventId);
+    return Response.ok().toResponseEntity();
+  }
+
 }
