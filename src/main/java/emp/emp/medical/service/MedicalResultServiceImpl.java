@@ -174,6 +174,34 @@ public class MedicalResultServiceImpl implements MedicalResultService {
     }
   }
 
+  /**
+   * 진료 결과 삭제
+   * @param userDetails 인증된 사용자의 정보
+   * @param eventId 캘린터 이벤트 시퀀스 ID
+   */
+  @Override
+  @Transactional
+  public void deleteMedicalResult(CustomUserDetails userDetails, Long eventId){
+    try{
+      Member currentMember = securityUtil.getCurrentMember();
+
+      CalendarEvent calendarEvent = findEventByIdAndValidate(eventId, currentMember);
+
+      validateEventType(calendarEvent);
+
+      MedicalResult medicalResult = medicalResultRepository.findByCalendarEvent(calendarEvent)
+              .orElseThrow(() -> new BusinessException(MedicalResultErrorCode.MEDICAL_RESULT_NOT_FOUND));
+
+      // 진료 결과 삭제
+      medicalResultRepository.delete(medicalResult);
+
+    } catch(BusinessException e){
+      throw e;
+    } catch(Exception e){
+      throw new BusinessException(MedicalResultErrorCode.DATABASE_ERROR);
+    }
+  }
+
 
   // =====================================================================
 
