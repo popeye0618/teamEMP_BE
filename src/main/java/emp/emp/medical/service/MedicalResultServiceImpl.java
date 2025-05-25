@@ -16,10 +16,14 @@ import emp.emp.medical.repository.MedicalResultRepository;
 import emp.emp.member.entity.Member;
 import emp.emp.member.repository.MemberRepository;
 import emp.emp.util.security.SecurityUtil;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MedicalResultServiceImpl implements MedicalResultService {
@@ -28,6 +32,9 @@ public class MedicalResultServiceImpl implements MedicalResultService {
   private final CalendarRepository calendarRepository;
   private final MedicalResultRepository medicalResultRepository;
   private final ImageService imageService;
+
+  @PersistenceContext
+  private EntityManager entityManager;
 
 
   /**
@@ -192,8 +199,11 @@ public class MedicalResultServiceImpl implements MedicalResultService {
       MedicalResult medicalResult = medicalResultRepository.findByCalendarEvent(calendarEvent)
               .orElseThrow(() -> new BusinessException(MedicalResultErrorCode.MEDICAL_RESULT_NOT_FOUND));
 
-      // 진료 결과 삭제
+      // 진료결과 삭제
       medicalResultRepository.delete(medicalResult);
+
+      // 캘린더 이벤트도 삭제
+      calendarRepository.delete(calendarEvent);
 
     } catch(BusinessException e){
       throw e;
