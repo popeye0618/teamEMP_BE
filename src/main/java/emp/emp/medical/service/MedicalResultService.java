@@ -2,7 +2,10 @@ package emp.emp.medical.service;
 
 import emp.emp.auth.custom.CustomUserDetails;
 import emp.emp.medical.dto.request.MedicalResultRequest;
+import emp.emp.medical.dto.response.FamilyMedicalResultResponse;
 import emp.emp.medical.dto.response.MedicalResultResponse;
+
+import java.util.List;
 
 public interface MedicalResultService {
 
@@ -38,5 +41,12 @@ public interface MedicalResultService {
    * @param eventId 캘린터 이벤트 시퀀스 ID
    */
   void deleteMedicalResult(CustomUserDetails userDetails, Long eventId);
+
+  /**
+   * 가족 구성원의 공개된 진료결과 조회
+   * @param userDetails
+   * @return 가족 구성원의 공개된 진료 결과 목록
+   */
+  List<FamilyMedicalResultResponse> getFamilyMedicalResult(CustomUserDetails userDetails);
 
 }
