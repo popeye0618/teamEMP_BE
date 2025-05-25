@@ -32,4 +32,11 @@ public interface MedicalResultService {
    */
   MedicalResultResponse updateMedicalResult(CustomUserDetails userDetails, Long eventId, MedicalResultRequest request);
 
+  /**
+   * 진료 결과 삭제
+   * @param userDetails 인증된 사용자의 정보
+   * @param eventId 캘린터 이벤트 시퀀스 ID
+   */
+  void deleteMedicalResult(CustomUserDetails userDetails, Long eventId);
+
 }
