@@ -91,6 +91,9 @@ public class Member extends BaseEntity {
 
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<MedicalResult> medicalResults = new ArrayList<>();
+  
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<HealthTag> healthTags = new ArrayList<>();
 
 	@Builder
 	public Member(String provider, String verifyId, String username, String email, String password, Role role,
@@ -139,4 +142,7 @@ public class Member extends BaseEntity {
 		this.address = address;
 	}
 
+	public void addHealthTag(HealthTag healthTag) {
+		healthTags.add(healthTag);
+	}
 }
