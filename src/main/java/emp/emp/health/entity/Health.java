@@ -37,10 +37,10 @@ public class Health extends BaseEntity {
 	private Type type;
 
 	@Setter
-	private double value;
+	private String value;
 
 	@Builder
-	public Health(Member member, Type type, double value) {
+	public Health(Member member, Type type, String value) {
 		this.member = member;
 		this.type = type;
 		this.value = value;

@@ -105,7 +105,7 @@ public class HealthServiceImpl implements HealthService {
 
 		List<HealthRecordGraphRes> healthRecords = getHealthRecordGraphValues(member, type, startDateTime, endDateTime);
 
-		String aiComment = healthCommentService.getAiComment(year, month, week, type, healthRecords);
+		String aiComment = healthCommentService.getAiComment(year, month, week, type, healthRecords, member);
 
 		return getHealthRecords(healthRecords, aiComment);
 	}
@@ -133,7 +133,7 @@ public class HealthServiceImpl implements HealthService {
 
 		List<HealthRecordGraphRes> healthRecords = getHealthRecordGraphValues(member, type, startDateTime, endDateTime);
 
-		String aiComment = healthCommentService.getAiComment(year, month, type, healthRecords);
+		String aiComment = healthCommentService.getAiComment(year, month, type, healthRecords, member);
 
 		return getHealthRecords(healthRecords, aiComment);
 	}

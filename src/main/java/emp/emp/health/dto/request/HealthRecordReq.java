@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class HealthRecordReq {
 
 	private String type;
-	private double value;
+	private String value;
 }

@@ -1,8 +1,11 @@
 package emp.emp.health.entity;
 
+import emp.emp.health.enums.Type;
 import emp.emp.member.entity.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -34,14 +37,21 @@ public class HealthComment {
 
 	private Integer week;
 
+	@Enumerated(EnumType.STRING)
+	private Type type;
+
 	private String content;
 
+	private int dataLength;
+
 	@Builder
-	public HealthComment(Member member, int year, int month, int week, String content) {
+	public HealthComment(Member member, int year, int month, Integer week, Type type, String content, int dataLength) {
 		this.member = member;
 		this.year = year;
 		this.month = month;
 		this.week = week;
+		this.type = type;
 		this.content = content;
+		this.dataLength = dataLength;
 	}
 }

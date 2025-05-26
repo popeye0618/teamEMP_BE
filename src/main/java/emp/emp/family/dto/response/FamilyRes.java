@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class FamilyRes {
 
 	private String familyName;
+	private String familyCode;
 	private FamilyMemberRes familyHead;
 	private List<FamilyMemberRes> familyMembers;
 }

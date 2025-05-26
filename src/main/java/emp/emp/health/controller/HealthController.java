@@ -61,7 +61,7 @@ public class HealthController {
 	 * @param type
 	 * @return
 	 */
-	@GetMapping("/health/weekly/{verifyId}/{year}/{month}/{type}")
+	@GetMapping("/health/monthly/{verifyId}/{year}/{month}/{type}")
 	public HealthRecordRes getMonthlyRecords(
 		@PathVariable String verifyId,
 		@PathVariable int year,
