@@ -16,6 +16,7 @@ import emp.emp.family.entity.Family;
 import emp.emp.family.exception.FamilyErrorCode;
 import emp.emp.family.repository.FamilyRepository;
 import emp.emp.member.entity.Member;
+import emp.emp.member.service.HealthTagService;
 import emp.emp.util.security.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 
@@ -25,6 +26,7 @@ public class FamilyServiceImpl implements FamilyService {
 
 	private final FamilyRepository familyRepository;
 	private final SecurityUtil securityUtil;
+	private final HealthTagService healthTagService;
 
 	/**
 	 * 가족 생성 메서드
@@ -128,8 +130,6 @@ public class FamilyServiceImpl implements FamilyService {
 
 	/**
 	 * 가족 정보 조회 메서드
-	 * todo: 건강 관리 개발 후 건강 상태 설정하기 (현재는 null로 설정)
-	 *
 	 * @return 가족 정보
 	 */
 	@Override
@@ -212,7 +212,7 @@ public class FamilyServiceImpl implements FamilyService {
 				.name(member.getUsername())
 				.age(member.getAge())
 				.gender(member.getGender())
-				.healthState(null)
+				.healthTag(healthTagService.getHealthTags(member))
 				.build()
 			)
 			.toList();
@@ -221,11 +221,12 @@ public class FamilyServiceImpl implements FamilyService {
 			.name(head.getUsername())
 			.age(head.getAge())
 			.gender(head.getGender())
-			.healthState(null)
+			.healthTag(healthTagService.getHealthTags(head))
 			.build();
 
 		return FamilyRes.builder()
 			.familyName(family.getName())
+			.familyCode(family.getCode())
 			.familyHead(familyHead)
 			.familyMembers(familyMembers)
 			.build();

@@ -33,7 +33,6 @@ public class HealthController {
 		return Response.ok().toResponseEntity();
 	}
 
-
 	/**
 	 * 주간 건강 정보 조회
 	 * @param verifyId
@@ -62,7 +61,7 @@ public class HealthController {
 	 * @param type
 	 * @return
 	 */
-	@GetMapping("/health/weekly/{verifyId}/{year}/{month}/{type}")
+	@GetMapping("/health/monthly/{verifyId}/{year}/{month}/{type}")
 	public HealthRecordRes getMonthlyRecords(
 		@PathVariable String verifyId,
 		@PathVariable int year,

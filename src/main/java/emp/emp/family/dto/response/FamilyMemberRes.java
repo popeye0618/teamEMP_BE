@@ -16,5 +16,5 @@ public class FamilyMemberRes {
 	private String name;
 	private int age;
 	private String gender;
-	private List<String> healthState;
+	private List<String> healthTag;
 }
