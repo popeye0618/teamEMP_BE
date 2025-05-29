@@ -226,6 +226,7 @@ public class FamilyServiceImpl implements FamilyService {
 
 		return FamilyRes.builder()
 			.familyName(family.getName())
+			.familyCode(family.getCode())
 			.familyHead(familyHead)
 			.familyMembers(familyMembers)
 			.build();

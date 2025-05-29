@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class HealthRecordGraphRes {
 
-	private double value;
+	private String value;
 	private LocalDate date;
+
 }
