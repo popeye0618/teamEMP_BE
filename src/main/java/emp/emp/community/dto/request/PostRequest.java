@@ -1,5 +1,6 @@
 package emp.emp.community.dto.request;
 
+import emp.emp.community.enums.HealthCategory;
 import emp.emp.community.enums.PostType;
 import emp.emp.member.entity.Member;
 import lombok.Getter;
@@ -15,4 +16,5 @@ public class PostRequest {
     private PostType postType;
     private Member member;
     private MultipartFile image;
+    private HealthCategory healthCategory;
 }

@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+import java.net.URL;
 import java.util.List;
 
 @RestController
@@ -34,9 +36,11 @@ public class CommunityController {
 
     // 1. 게시글 작성
     @PostMapping("community/createPost")
-    public ResponseEntity<> createPost()(@RequestBody PostRequest postRequest) {
-
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Void> createPost(@RequestBody PostRequest postRequest, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Member member = securityUtil.getCurrentMember();
+        Long postId = postService.createPost(member, postRequest);
+        URI redirectUrl = URI.create("/community/get/" + postId);
+        return ResponseEntity.created(redirectUrl).build();
     }
 
 
@@ -59,6 +63,9 @@ public class CommunityController {
     public ResponseEntity<Post> updatePost(@PathVariable int postId, @RequestBody PostRequest postRequest) {
 
     }
+
+
+//    4-1 게시글 수정 폼 불러오기
 
 // 5. 게시글 삭제
     @DeleteMapping("community/delete/{postId}")
