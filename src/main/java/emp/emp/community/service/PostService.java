@@ -3,6 +3,7 @@ package emp.emp.community.service;
 import emp.emp.community.dto.request.PostRequest;
 import emp.emp.community.entity.Like;
 import emp.emp.community.entity.Post;
+import emp.emp.community.enums.HealthCategory;
 import emp.emp.community.repository.LikeRepository;
 import emp.emp.community.repository.PostRepository;
 import emp.emp.member.entity.Member;
@@ -61,6 +62,13 @@ public class PostService {
         }
 
 
-
+    public void deletePost(Long postId) {
+        postRepository.deleteById(postId);
     }
+
+    public List<Post> getPostsByHealthCategory(HealthCategory healthCategory) {
+        List<Post> posts = postRepository.findByHealthCategory(healthCategory);
+        return posts;
+    }
+}
 }

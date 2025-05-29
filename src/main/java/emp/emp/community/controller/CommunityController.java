@@ -4,6 +4,7 @@ package emp.emp.community.controller;
 import emp.emp.auth.custom.CustomUserDetails;
 import emp.emp.community.dto.request.PostRequest;
 import emp.emp.community.entity.Post;
+import emp.emp.community.enums.HealthCategory;
 import emp.emp.community.service.CommentService;
 import emp.emp.community.service.LikeService;
 import emp.emp.community.service.PostService;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class CommunityController {
@@ -26,7 +28,7 @@ public class CommunityController {
     private CommentService commentService;
 
     // 0. 초기화면
-    @GetMapping("community/index")
+    @GetMapping("community")
     public ResponseEntity<List<Post>> getAllPosts(@AuthenticationPrincipal CustomUserDetails userDetails) {
         Member member = securityUtil.getCurrentMember();
 
@@ -46,21 +48,21 @@ public class CommunityController {
 
 
     // 2. 게시글 조회
-    @GetMapping("community/{postId}")
+    @GetMapping("/community/{postId}")
     public ResponseEntity<> getPost(@PathVariable int postId) {
 
     }
 
 
 // 3. 좋아요 누르기
-    @PostMapping("community/{postId}/like")
-    public ResponseEntity<> createOrDeleteLike(@PathVariable Long postId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    @PostMapping("/community/{postId}/like")
+    public ResponseEntity<Boolean> createOrDeleteLike(@PathVariable Long postId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         Member member = securityUtil.getCurrentMember();
         postService.createOrDeleteLike(member, postId);
     }
 
 // 4. 게시글 수정
-    @PatchMapping("community/patch/{postId}")
+    @PatchMapping("/community/patch/{postId}")
     public ResponseEntity<Post> updatePost(@PathVariable int postId, @RequestBody PostRequest postRequest) {
 
     }
@@ -69,16 +71,19 @@ public class CommunityController {
 //    4-1 게시글 수정 폼 불러오기
 
 // 5. 게시글 삭제
-    @DeleteMapping("community/delete/{postId}")
-    public ResponseEntity<> getPost() {
-
+// 빈환값 제외 구현 완료
+    @DeleteMapping("/community/delete/{postId}")
+    public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
+        postService.deletePost(postId);
+        return ResponseEntity.noContent().build();
     }
 
 
 // 6. 카테코리별 글 조회
-    @GetMapping
-    public ResponseEntity<> getPost() {
-
+    @GetMapping("/community/{healthCategory}")
+    public ResponseEntity<List<Post>> getPost(@PathVariable HealthCategory healthCategory) {
+        List<Post> post = postService.getPostsByHealthCategory(healthCategory);
+        return ResponseEntity.ok(post);
     }
 
 // 7. 댓글 달기
