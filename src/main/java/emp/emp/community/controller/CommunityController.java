@@ -46,16 +46,17 @@ public class CommunityController {
 
 
     // 2. 게시글 조회
-    @GetMapping("community/get/{postId}")
+    @GetMapping("community/{postId}")
     public ResponseEntity<> getPost(@PathVariable int postId) {
 
     }
 
 
 // 3. 좋아요 누르기
-    @PostMapping
-    public ResponseEntity<> getPost() {
-
+    @PostMapping("community/{postId}/like")
+    public ResponseEntity<> createOrDeleteLike(@PathVariable Long postId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Member member = securityUtil.getCurrentMember();
+        postService.createOrDeleteLike(member, postId);
     }
 
 // 4. 게시글 수정
