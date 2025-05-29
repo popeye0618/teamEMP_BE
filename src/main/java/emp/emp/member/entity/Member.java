@@ -10,6 +10,7 @@ import emp.emp.calendar.entity.CalendarEvent;
 import emp.emp.family.entity.Family;
 import emp.emp.health.entity.Health;
 import emp.emp.health.entity.HealthComment;
+import emp.emp.medical.entity.MedicalResult;
 import emp.emp.member.enums.Role;
 import emp.emp.util.BaseEntity;
 import jakarta.persistence.*;
@@ -85,6 +86,12 @@ public class Member extends BaseEntity {
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<HealthComment> healthComments = new ArrayList<>();
 
+	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+	private List<CalendarEvent> calendarEvent = new ArrayList<>();
+
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<MedicalResult> medicalResults = new ArrayList<>();
+  
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<HealthTag> healthTags = new ArrayList<>();
 
@@ -135,11 +142,7 @@ public class Member extends BaseEntity {
 		this.address = address;
 	}
 
-	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
-	private List<CalendarEvent> calendarEvent = new ArrayList<>();
-
 	public void addHealthTag(HealthTag healthTag) {
 		healthTags.add(healthTag);
 	}
-
 }

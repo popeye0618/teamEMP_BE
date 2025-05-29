@@ -2,6 +2,7 @@ package emp.emp.calendar.entity;
 
 import emp.emp.calendar.dto.request.CalendarEventRequest;
 import emp.emp.calendar.enums.CalendarEventType;
+import emp.emp.medical.entity.MedicalResult;
 import emp.emp.member.entity.Member;
 import emp.emp.util.BaseEntity;
 import jakarta.persistence.*;
@@ -36,6 +37,9 @@ public class CalendarEvent extends BaseEntity {
   private LocalDateTime endDate;
 
   private Integer priority;
+
+  @OneToOne(mappedBy = "calendarEvent", cascade = CascadeType.ALL, orphanRemoval = true)
+  private MedicalResult medicalResult;
 
   public void update(CalendarEventRequest request) {
     this.eventType = request.getEventType(); // enum 타입으로 매핑됨
