@@ -131,6 +131,8 @@ public class PostService {
         postRepository.deleteById(postId);
     }
 
+
+//    6. 카테고리별 글 조회
     public List<Post> getPostsByHealthCategory(HealthCategory healthCategory) {
         List<Post> posts = postRepository.findByHealthCategory(healthCategory);
         return posts;

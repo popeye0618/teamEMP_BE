@@ -5,6 +5,7 @@ import emp.emp.auth.custom.CustomUserDetails;
 import emp.emp.community.dto.request.PostRequest;
 import emp.emp.community.dto.response.PostResponse;
 import emp.emp.community.entity.Post;
+import emp.emp.community.enums.HealthCategory;
 import emp.emp.community.service.CommentService;
 import emp.emp.community.service.LikeService;
 import emp.emp.community.service.PostService;
@@ -61,11 +62,11 @@ public class CommunityController {
         return ResponseEntity.ok(message);
     }
 
-// 4. 게시글 수정
-    @PatchMapping("/community/patch/{postId}")
-    public ResponseEntity<Post> updatePost(@PathVariable int postId, @RequestBody PostRequest postRequest) {
-
-    }
+//// 4. 게시글 수정
+//    @PatchMapping("/community/patch/{postId}")
+//    public ResponseEntity<Post> updatePost(@PathVariable int postId, @RequestBody PostRequest postRequest) {
+//
+//    }
 
 
 //    4-1 게시글 수정 폼 불러오기
@@ -79,12 +80,12 @@ public class CommunityController {
     }
 
 
-//// 6. 카테코리별 글 조회 (완료)
-//    @GetMapping("/community/{healthCategory}")
-//    public ResponseEntity<List<Post>> getPost(@PathVariable HealthCategory healthCategory) {
-//        List<Post> post = postService.getPostsByHealthCategory(healthCategory);
-//        return ResponseEntity.ok(post);
-//    }
+// 6. 카테코리별 글 조회 (완료)
+    @GetMapping("/community/{healthCategory}")
+    public ResponseEntity<List<Post>> getPost(@PathVariable HealthCategory healthCategory) {
+        List<Post> post = postService.getPostsByHealthCategory(healthCategory);
+        return ResponseEntity.ok(post);
+    }
 //
 //// 7. 댓글 달기
 //    @PostMapping
@@ -95,7 +96,7 @@ public class CommunityController {
 //
 //
 //// 8. 댓글 수정
-//    @PatchMapping("community/comment/moldify/{postId}")
+//    @PatchMapping("community/comment/modify/{postId}")
 //    public ResponseEntity<> patchComment() {
 //
 //    }
