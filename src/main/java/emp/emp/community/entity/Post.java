@@ -42,9 +42,4 @@ public class Post extends BaseEntity {
     @Column(name = "image_url", nullable = false)
     private String ImageUrl;
     // 좋아요는 수치 저장은 따로 안함
-
-
-
-
-
 }

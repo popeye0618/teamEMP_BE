@@ -3,8 +3,8 @@ package emp.emp.community.controller;
 
 import emp.emp.auth.custom.CustomUserDetails;
 import emp.emp.community.dto.request.PostRequest;
+import emp.emp.community.dto.response.PostResponse;
 import emp.emp.community.entity.Post;
-import emp.emp.community.enums.HealthCategory;
 import emp.emp.community.service.CommentService;
 import emp.emp.community.service.LikeService;
 import emp.emp.community.service.PostService;
@@ -13,11 +13,10 @@ import emp.emp.util.security.SecurityUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
-import java.net.URL;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class CommunityController {
@@ -27,38 +26,39 @@ public class CommunityController {
     private LikeService likeService;
     private CommentService commentService;
 
-    // 0. 초기화면
-    @GetMapping("community")
-    public ResponseEntity<List<Post>> getAllPosts(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        Member member = securityUtil.getCurrentMember();
-
-
+    // 0. 초기화면 (완료)
+    @GetMapping("/community")
+    public ResponseEntity<List<Post>> getAllPosts() {
+        List<Post> posts = postService.getPosts();
+        return ResponseEntity.ok(posts);
     }
 
 
     // 1. 게시글 작성
     @PostMapping("community/createPost")
-    public ResponseEntity<Void> createPost(@RequestBody PostRequest postRequest, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    public ResponseEntity<Void> createPost(@RequestBody PostRequest postRequest, @AuthenticationPrincipal CustomUserDetails customUserDetails, MultipartFile image) {
         Member member = securityUtil.getCurrentMember();
-        Long postId = postService.createPost(member, postRequest);
+        long postId = postService.createPost(member, postRequest, image);
         URI redirectUrl = URI.create("/community/get/" + postId);
         return ResponseEntity.created(redirectUrl).build();
     }
 
 
 
-    // 2. 게시글 조회
+    // 2. 게시글 조회 (완료)
     @GetMapping("/community/{postId}")
-    public ResponseEntity<> getPost(@PathVariable int postId) {
-
+    public ResponseEntity<PostResponse> getPost(@PathVariable int postId) {
+        PostResponse post = postService.getPostById(postId);
+        return ResponseEntity.ok(post);
     }
 
 
-// 3. 좋아요 누르기
+// 3. 좋아요 누르기 (완료)
     @PostMapping("/community/{postId}/like")
-    public ResponseEntity<Boolean> createOrDeleteLike(@PathVariable Long postId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    public ResponseEntity<String> createOrDeleteLike(@PathVariable Long postId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         Member member = securityUtil.getCurrentMember();
-        postService.createOrDeleteLike(member, postId);
+        String message = postService.createOrDeleteLike(member, postId);
+        return ResponseEntity.ok(message);
     }
 
 // 4. 게시글 수정
@@ -79,33 +79,33 @@ public class CommunityController {
     }
 
 
-// 6. 카테코리별 글 조회
-    @GetMapping("/community/{healthCategory}")
-    public ResponseEntity<List<Post>> getPost(@PathVariable HealthCategory healthCategory) {
-        List<Post> post = postService.getPostsByHealthCategory(healthCategory);
-        return ResponseEntity.ok(post);
-    }
-
-// 7. 댓글 달기
-    @PostMapping
-    public ResponseEntity<> getPost() {
-
-    }
-
-
-
-// 8. 댓글 수정
-    @PatchMapping("community/comment/moldify/{postId}")
-    public ResponseEntity<> getPost() {
-
-    }
-
-
-// 9. 댓글 삭제
-    @DeleteMapping
-    public ResponseEntity<> getPost() {
-
-    }
+//// 6. 카테코리별 글 조회 (완료)
+//    @GetMapping("/community/{healthCategory}")
+//    public ResponseEntity<List<Post>> getPost(@PathVariable HealthCategory healthCategory) {
+//        List<Post> post = postService.getPostsByHealthCategory(healthCategory);
+//        return ResponseEntity.ok(post);
+//    }
+//
+//// 7. 댓글 달기
+//    @PostMapping
+//    public ResponseEntity<> registerComment() {
+//
+//    }
+//
+//
+//
+//// 8. 댓글 수정
+//    @PatchMapping("community/comment/moldify/{postId}")
+//    public ResponseEntity<> patchComment() {
+//
+//    }
+//
+//
+//// 9. 댓글 삭제
+//    @DeleteMapping
+//    public ResponseEntity<> deleteComment() {
+//
+//    }
 
 
 }
