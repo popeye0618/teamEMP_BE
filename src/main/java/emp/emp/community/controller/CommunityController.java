@@ -2,8 +2,10 @@ package emp.emp.community.controller;
 
 
 import emp.emp.auth.custom.CustomUserDetails;
+import emp.emp.community.dto.request.CommentRequest;
 import emp.emp.community.dto.request.PostRequest;
 import emp.emp.community.dto.response.PostResponse;
+import emp.emp.community.entity.Comment;
 import emp.emp.community.entity.Post;
 import emp.emp.community.enums.HealthCategory;
 import emp.emp.community.service.CommentService;
@@ -88,25 +90,36 @@ public class CommunityController {
     }
 //
 //// 7. 댓글 달기
-//    @PostMapping
-//    public ResponseEntity<> registerComment() {
-//
-//    }
-//
-//
-//
-//// 8. 댓글 수정
-//    @PatchMapping("community/comment/modify/{postId}")
-//    public ResponseEntity<> patchComment() {
-//
-//    }
-//
-//
-//// 9. 댓글 삭제
-//    @DeleteMapping
-//    public ResponseEntity<> deleteComment() {
-//
-//    }
+    @PostMapping("/community/{postId}/comments")
+    public ResponseEntity<String> registerComment(@PathVariable long postId, @AuthenticationPrincipal CustomUserDetails customUserDetails,@RequestBody CommentRequest commentRequest) {
+        Member member = securityUtil.getCurrentMember();
+        String message = commentService.registerComment(postId, member, commentRequest);
+
+        return ResponseEntity.ok(message);
+    }
+
+
+
+// 8. 댓글 수정
+    @PatchMapping("community/{postId}/comment/modify/{commentId}")
+    public ResponseEntity<> patchComment() {
+
+    }
+
+
+    // 8. 댓글 수정
+    @GetMapping("community/{postId}/comment/modify/{commentId}")
+    public ResponseEntity<> getPatchCommentForm() {
+
+    }
+
+
+
+    // 9. 댓글 삭제
+    @DeleteMapping("/community/{postId}/comments/{commentId}")
+    public ResponseEntity<String> deleteComment(@PathVariable Long postId, @PathVariable Long commentId) {
+        String message = commentService.deleteComment(commentId);
+    }
 
 
 }
