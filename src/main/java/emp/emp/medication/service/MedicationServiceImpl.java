@@ -228,6 +228,30 @@ public class MedicationServiceImpl implements MedicationService{
     }
   }
 
+  /**
+   * 내 복약관리 목록 조회
+   * @param userDetails 인증된 사용자의 정보
+   * @return 복약관리 목록
+   */
+  @Override
+  @Transactional(readOnly = true)
+  public List<MedicationManagementResponse> getMyMedications(CustomUserDetails userDetails) {
+    try {
+      Member currentMember = securityUtil.getCurrentMember();
+
+      // 해당 회원의 모든 복약관리 조회
+      List<MedicationManagement> medications = medicationManagementRepository.findByMemberOrderByStartDateDesc(currentMember);
+
+      // 응답 DTO 리스트로
+      return medications.stream()
+              .map(this::convertToResponse)
+              .collect(Collectors.toList());
+    } catch (Exception e) {
+      log.error("내 복약관리 목록 조회 중 오류 발생", e);
+      throw new BusinessException(MedicationErrorCode.DATABASE_ERROR);
+    }
+  }
+
 
 
   // ======================================================

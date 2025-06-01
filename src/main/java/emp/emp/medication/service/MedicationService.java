@@ -3,6 +3,7 @@ package emp.emp.medication.service;
 import emp.emp.auth.custom.CustomUserDetails;
 import emp.emp.medication.dto.request.MedicationManagementRequest;
 import emp.emp.medication.dto.response.MedicationManagementResponse;
+import java.util.List;
 
 public interface MedicationService {
 
@@ -38,4 +39,12 @@ public interface MedicationService {
    * @param eventId 캘린더 이벤트 시퀀스 ID
    */
   void deleteMedication(CustomUserDetails userDetails, Long eventId);
+
+  /**
+   * 내 복약관리 목록 조회
+   * @param userDetails 인증된 사용자의 정보
+   * @return 복약관리 목록
+   */
+  List<MedicationManagementResponse> getMyMedications(CustomUserDetails userDetails);
+
 }

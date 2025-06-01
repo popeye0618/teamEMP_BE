@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth/user/medications")
@@ -90,5 +91,21 @@ public class MedicationController {
 
     return Response.ok().toResponseEntity();
   }
+
+  /**
+   * 내 복약관리 목록 조회
+   * @param userDetails 인증된 사용자의 정보
+   * @return 내 복약관리 목록
+   */
+  @GetMapping
+  public ResponseEntity<Response<List<MedicationManagementResponse>>> getMyMedications(
+          @AuthenticationPrincipal CustomUserDetails userDetails
+  ) {
+    List<MedicationManagementResponse> response = medicationService.getMyMedications(userDetails);
+
+    return Response.ok(response).toResponseEntity();
+  }
+
+
 
 }
