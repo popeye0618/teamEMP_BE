@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -41,6 +43,10 @@ public class MedicationManagement extends BaseEntity {
 
   @Column(name = "is_publid")
   @Builder.Default
-  private Boolean isPublic = false;
+  private Boolean isPublic = false; // 가족 공개여부
+
+  @OneToMany(mappedBy = "medicationManagement", cascade = CascadeType.ALL, orphanRemoval = true)
+  @Builder.Default
+  private List<MedicationDrug> drugs = new ArrayList<>(); // 약물정보와 일대다 관계
 
 }
