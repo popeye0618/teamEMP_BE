@@ -41,4 +41,20 @@ public class MedicationController {
     return Response.ok(response).toResponseEntity();
   }
 
+  /**
+   * 복약관리 조회
+   * @param userDetails 인증된 사용자 정보
+   * @param eventId 캘린더 이벤트 ID
+   * @return 복약관리 정보
+   */
+  @GetMapping("/{eventId}")
+  public ResponseEntity<Response<MedicationManagementResponse>> getMedication(
+          @AuthenticationPrincipal CustomUserDetails userDetails,
+          @PathVariable Long eventId
+  ) {
+    MedicationManagementResponse response = medicationService.getMedication(userDetails, eventId);
+
+    return Response.ok(response).toResponseEntity();
+  }
+
 }

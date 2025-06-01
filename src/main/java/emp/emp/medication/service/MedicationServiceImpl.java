@@ -5,11 +5,15 @@ import emp.emp.calendar.entity.CalendarEvent;
 import emp.emp.calendar.enums.CalendarEventType;
 import emp.emp.calendar.repository.CalendarRepository;
 import emp.emp.exception.BusinessException;
+import emp.emp.medication.dto.request.MedicationDrugRequest;
 import emp.emp.medication.dto.request.MedicationManagementRequest;
+import emp.emp.medication.dto.request.MedicationTimingRequest;
 import emp.emp.medication.dto.response.MedicationDrugResponse;
 import emp.emp.medication.dto.response.MedicationManagementResponse;
 import emp.emp.medication.dto.response.MedicationTimingResponse;
+import emp.emp.medication.entity.MedicationDrug;
 import emp.emp.medication.entity.MedicationManagement;
+import emp.emp.medication.entity.MedicationTiming;
 import emp.emp.medication.exception.MedicationErrorCode;
 import emp.emp.medication.repository.MedicationManagementRepository;
 import emp.emp.member.entity.Member;
@@ -31,10 +35,87 @@ public class MedicationServiceImpl implements MedicationService{
   private final CalendarRepository calendarRepository;
   private final MedicationManagementRepository medicationManagementRepository;
 
+  /**
+   *
+   * @param userDetails 인증된 사용자의 정보
+   * @param eventId 캘린더 이벤트의 시퀀스 ID
+   * @param request 복약관리 등록 요청하는 데이터들
+   * @return
+   */
   @Override
   @Transactional
-  public MedicationManagementResponse createMedication(CustomUserDetails userDetails, Long eventId, MedicationManagementRequest request){
-    try{
+  public MedicationManagementResponse createMedication(CustomUserDetails userDetails, Long eventId, MedicationManagementRequest request) {
+    try {
+      // 현재 로그인한 회원 정보 가져오기
+      Member currentMember = securityUtil.getCurrentMember();
+
+      // 캘린더 이벤트 조회 & 소유권 검증
+      CalendarEvent calendarEvent = findEventByIdAndValidate(eventId, currentMember);
+
+      // 이벤트 타입 확인
+      validateEventType(calendarEvent);
+
+      // 이미 복약관리가 등록되어 있는지 확인
+      medicationManagementRepository.findByCalendarEvent(calendarEvent)
+              .ifPresent(medication -> {
+                throw new BusinessException(MedicationErrorCode.MEDICATION_ALREADY_EXISTS);
+              });
+
+      // 요청 데이터의 유효성 검증
+      validateRequest(request);
+
+      // 복약관리Entity 생성
+      MedicationManagement medicationManagement = MedicationManagement.builder()
+              .calendarEvent(calendarEvent)
+              .member(currentMember)
+              .diseaseName(request.getDiseaseName())
+              .startDate(request.getStartDate())
+              .endDate(request.getEndDate())
+              .isPublic(request.getIsPublic())
+              .build();
+
+      // 약물 정보들 추가
+      for (MedicationDrugRequest drugRequest : request.getDrugs()) {
+        MedicationDrug drug = MedicationDrug.builder()
+                .drugName(drugRequest.getDrugName())
+                .dosage(drugRequest.getDosage())
+                .build();
+        medicationManagement.addDrug(drug); // 양방향 관계 설정과 함께 추가
+      }
+
+      // 복약 시기들 추가
+      for (MedicationTimingRequest timingRequest : request.getTimings()) {
+        MedicationTiming timing = MedicationTiming.builder()
+                .timingType(timingRequest.getMedicationTimingType())
+                .precaution(timingRequest.getPrecaution())
+                .build();
+        medicationManagement.addTiming(timing);
+      }
+
+      // 복약관리 저장
+      medicationManagementRepository.save(medicationManagement);
+
+      // 응답 DTO로
+      return convertToResponse(medicationManagement);
+
+    } catch (BusinessException e) {
+      throw e;
+    } catch (Exception e) {
+      log.error("복약관리 등록하는데 오류 발생", e);
+      throw new BusinessException(MedicationErrorCode.DATABASE_ERROR);
+    }
+  }
+
+  /**
+   * 복약관리 조회
+   * @param userDetails 인증된 사용자 정보
+   * @param eventId 캘린더 이벤트 ID
+   * @return 복약관리 정보
+   */
+  @Override
+  @Transactional(readOnly = true)
+  public MedicationManagementResponse getMedication(CustomUserDetails userDetails, Long eventId) {
+    try {
       // 현재 로그인한 회원정보 가져오기
       Member currentMember = securityUtil.getCurrentMember();
 
@@ -58,6 +139,7 @@ public class MedicationServiceImpl implements MedicationService{
       throw new BusinessException(MedicationErrorCode.DATABASE_ERROR);
     }
   }
+
 
 
   // ======================================================
@@ -133,6 +215,27 @@ public class MedicationServiceImpl implements MedicationService{
             .drugs(drugResponses)
             .timings(timingResponses)
             .build();
+  }
+
+  /**
+   * 복약관리 요청 데이터 유효성 검증
+   * @param request 검증할 요청 데이터
+   */
+  private void validateRequest(MedicationManagementRequest request) {
+    // 날짜 범위 유효성 검증
+    if (!request.isValidDateRange()) {
+      throw new BusinessException(MedicationErrorCode.INVALID_DATE_RANGE);
+    }
+
+    // 약물 목록이 비어있는지 확인
+    if (request.getDrugs() == null || request.getDrugs().isEmpty()) {
+      throw new BusinessException(MedicationErrorCode.DRUG_LIST_EMPTY);
+    }
+
+    // 복약 시기 목록이 비어있는지 확인
+    if (request.getTimings() == null || request.getTimings().isEmpty()) {
+      throw new BusinessException(MedicationErrorCode.TIMING_LIST_EMPTY);
+    }
   }
 
 }

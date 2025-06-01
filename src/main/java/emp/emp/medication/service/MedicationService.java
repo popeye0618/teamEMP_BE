@@ -15,4 +15,12 @@ public interface MedicationService {
    */
   MedicationManagementResponse createMedication(CustomUserDetails userDetails, Long eventId, MedicationManagementRequest request);
 
+  /**
+   * 복약관리 조회
+   * @param userDetails 인증된 사용자의 정보
+   * @param eventId 캘린더 이벤트 시퀀스 ID
+   * @return 복약관리 정보
+   */
+  MedicationManagementResponse getMedication(CustomUserDetails userDetails, Long eventId);
+
 }
