@@ -14,6 +14,5 @@ public class PostRequest {
     private String title;
     private String bodyText;
     private PostType postType;
-    private Member member;
     private HealthCategory healthCategory;
 }

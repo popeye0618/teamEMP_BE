@@ -39,7 +39,7 @@ public class Post extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private HealthCategory healthCategory;
 
-    @Column(name = "image_url", nullable = false)
-    private String ImageUrl;
+    @Column(name = "image_url")
+    private String imageUrl;
     // 좋아요는 수치 저장은 따로 안함
 }

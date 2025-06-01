@@ -100,26 +100,26 @@ public class CommunityController {
 
 
 
-// 8. 댓글 수정
-    @PatchMapping("community/{postId}/comment/modify/{commentId}")
-    public ResponseEntity<> patchComment() {
-
-    }
-
-
-    // 8. 댓글 수정
-    @GetMapping("community/{postId}/comment/modify/{commentId}")
-    public ResponseEntity<> getPatchCommentForm() {
-
-    }
-
-
-
-    // 9. 댓글 삭제
-    @DeleteMapping("/community/{postId}/comments/{commentId}")
-    public ResponseEntity<String> deleteComment(@PathVariable Long postId, @PathVariable Long commentId) {
-        String message = commentService.deleteComment(commentId);
-    }
+//// 8. 댓글 수정
+//    @PatchMapping("community/{postId}/comment/modify/{commentId}")
+//    public ResponseEntity<> patchComment() {
+//
+//    }
+//
+//
+//    // 8. 댓글 수정
+//    @GetMapping("community/{postId}/comment/modify/{commentId}")
+//    public ResponseEntity<> getPatchCommentForm() {
+//
+//    }
+//
+//
+//
+//    // 9. 댓글 삭제
+//    @DeleteMapping("/community/{postId}/comments/{commentId}")
+//    public ResponseEntity<String> deleteComment(@PathVariable Long postId, @PathVariable Long commentId) {
+//        String message = commentService.deleteComment(commentId);
+//    }
 
 
 }

@@ -20,6 +20,7 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,11 +29,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PostService {
 
-    private PostRepository postRepository;
-    private LikeRepository likeRepository;
-    private CommentRepository commentRepository;
+    private final PostRepository postRepository;
+    private final LikeRepository likeRepository;
+    private final CommentRepository commentRepository;
     private final S3Client s3Client;
-
 
 
 //    0. 초기화면
@@ -51,7 +51,7 @@ public class PostService {
         post.setHealthCategory(postRequest.getHealthCategory());
 
         // 이미지 업로드 방식
-        String imageUrl = "";
+        String imageUrl = null;
         if (image != null && !image.isEmpty()) {
             try {
                 String filename = "post-images/" + UUID.randomUUID() + "-" + image.getOriginalFilename();
@@ -71,6 +71,9 @@ public class PostService {
             }
         }
         post.setImageUrl(imageUrl);
+        LocalDateTime now = LocalDateTime.now();
+        post.setCreatedAt(now);
+        post.setUpdatedAt(now);
 
         Post savedPost = postRepository.save(post);
         return savedPost.getId();
