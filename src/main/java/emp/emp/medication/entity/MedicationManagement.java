@@ -1,10 +1,12 @@
-package emp.emp.medication.enums;
+package emp.emp.medication.entity;
 
 import emp.emp.calendar.entity.CalendarEvent;
 import emp.emp.member.entity.Member;
 import emp.emp.util.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -28,6 +30,17 @@ public class MedicationManagement extends BaseEntity {
   @JoinColumn(name = "member_id")
   private Member member; // 회원과 다대일 관계
 
+  @Column(name = "disease_name", nullable = false, length = 10)
+  private String diseaseName; // 병명(필수, 최대10자)
 
+  @Column(name = "start_date", nullable = false)
+  private LocalDate startDate; // 복약 시작일
+
+  @Column(name = "end_date", nullable = false)
+  private LocalDate endDate; // 복약 종료일
+
+  @Column(name = "is_publid")
+  @Builder.Default
+  private Boolean isPublic = false;
 
 }
