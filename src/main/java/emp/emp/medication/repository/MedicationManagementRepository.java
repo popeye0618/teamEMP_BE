@@ -4,10 +4,12 @@ import emp.emp.calendar.entity.CalendarEvent;
 import emp.emp.medication.entity.MedicationManagement;
 import emp.emp.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public interface MedicationManagementRepository extends JpaRepository<MedicationManagement, Long> {
 
   /**
