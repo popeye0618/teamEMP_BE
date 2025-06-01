@@ -23,4 +23,13 @@ public interface MedicationService {
    */
   MedicationManagementResponse getMedication(CustomUserDetails userDetails, Long eventId);
 
+  /**
+   * 복약관리 수정
+   * @param userDetails 인증된 사용자의 정보
+   * @param eventId 캘린더 이벤트 시퀀스 ID
+   * @param request 복약관리 수정요청 데이터
+   * @return 수정된 복약관리 정보
+   */
+  MedicationManagementResponse updateMedication(CustomUserDetails userDetails, Long eventId, MedicationManagementRequest request);
+
 }

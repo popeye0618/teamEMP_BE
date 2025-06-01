@@ -140,6 +140,66 @@ public class MedicationServiceImpl implements MedicationService{
     }
   }
 
+  /**
+   * 복약관리 수정
+   * @param userDetails 인증된 사용자의 정보
+   * @param eventId 캘린더 이벤트 시퀀스 ID
+   * @param request 복약관리 수정요청 데이터
+   * @return
+   */
+  @Override
+  @Transactional
+  public MedicationManagementResponse updateMedication(CustomUserDetails userDetails, Long eventId, MedicationManagementRequest request){
+
+    try{
+      Member currentMember = securityUtil.getCurrentMember();
+
+      CalendarEvent calendarEvent = findEventByIdAndValidate(eventId, currentMember);
+
+      validateEventType(calendarEvent);
+
+      MedicationManagement medicationManagement = medicationManagementRepository.findByCalendarEvent(calendarEvent)
+              .orElseThrow(() -> new BusinessException(MedicationErrorCode.MEDICATION_NOT_FOUND));
+
+      validateRequest(request);
+
+      // 기본 정보 수정하기
+      medicationManagement.setDiseaseName(request.getDiseaseName());
+      medicationManagement.setStartDate(request.getStartDate());
+      medicationManagement.setEndDate(request.getEndDate());
+      medicationManagement.setIsPublic(request.getIsPublic());
+
+      // 기존의 약물 정보와 복약 시기 모두 삭제
+      medicationManagement.clearDetails();
+
+      // 새로운 약물 정보들 추가
+      for (MedicationDrugRequest drugRequest : request.getDrugs()) {
+        MedicationDrug drug = MedicationDrug.builder()
+                .drugName(drugRequest.getDrugName())
+                .dosage(drugRequest.getDosage())
+                .build();
+        medicationManagement.addDrug(drug); // 양방향 관계 설정 및 함께 추가
+      }
+
+      // 새로운 복약 시기들 추가
+      for (MedicationTimingRequest timingRequest : request.getTimings()) {
+        MedicationTiming timing = MedicationTiming.builder()
+                .timingType(timingRequest.getMedicationTimingType())
+                .precaution(timingRequest.getPrecaution())
+                .build();
+        medicationManagement.addTiming(timing);
+      }
+      return convertToResponse(medicationManagement);
+    }catch(BusinessException e){
+      throw e;
+    } catch(Exception e){
+      log.error("복약관리 수정하는데 오류 발생", e);
+      throw new BusinessException(MedicationErrorCode.DATABASE_ERROR);
+    }
+
+  }
+
+
 
 
   // ======================================================

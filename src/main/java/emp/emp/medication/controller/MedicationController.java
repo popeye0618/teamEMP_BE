@@ -57,4 +57,22 @@ public class MedicationController {
     return Response.ok(response).toResponseEntity();
   }
 
+  /**
+   * 복약관리 수정
+   * @param userDetails
+   * @param eventId
+   * @param request
+   * @return
+   */
+  @PutMapping("/{eventId}")
+  public ResponseEntity<Response<MedicationManagementResponse>> updateMedication(
+          @AuthenticationPrincipal CustomUserDetails userDetails,
+          @PathVariable Long eventId,
+          @RequestBody @Valid MedicationManagementRequest request
+  ) {
+    MedicationManagementResponse response = medicationService.updateMedication(userDetails, eventId, request);
+
+    return Response.ok(response).toResponseEntity();
+  }
+
 }
