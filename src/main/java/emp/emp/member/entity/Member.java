@@ -11,6 +11,7 @@ import emp.emp.family.entity.Family;
 import emp.emp.health.entity.Health;
 import emp.emp.health.entity.HealthComment;
 import emp.emp.medical.entity.MedicalResult;
+import emp.emp.medication.enums.MedicationManagement;
 import emp.emp.member.enums.Role;
 import emp.emp.util.BaseEntity;
 import jakarta.persistence.*;
@@ -97,6 +98,9 @@ public class Member extends BaseEntity {
 
 	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
 	private List<CalendarEvent> calendarEvents = new ArrayList<>();
+
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<MedicationManagement> medicationManagements = new ArrayList<>();
 
 	@Builder
 	public Member(String provider, String verifyId, String username, String email, String password, Role role,

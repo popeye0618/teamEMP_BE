@@ -3,7 +3,7 @@ package emp.emp.calendar.entity;
 import emp.emp.calendar.dto.request.CalendarEventRequest;
 import emp.emp.calendar.enums.CalendarEventType;
 import emp.emp.medical.entity.MedicalResult;
-import emp.emp.medication.entity.MedicationManagement;
+import emp.emp.medication.enums.MedicationManagement;
 import emp.emp.member.entity.Member;
 import emp.emp.util.BaseEntity;
 import jakarta.persistence.*;
@@ -45,7 +45,7 @@ public class CalendarEvent extends BaseEntity {
 
   // 복약관리와 일대일 과계
   @OneToOne(mappedBy="calendarEvent", cascade = CascadeType.ALL, orphanRemoval = true)
-  private MedicationManagement medicationManagement;
+  private MedicationManagement medicaionManagement;
 
   public void update(CalendarEventRequest request) {
     this.eventType = request.getEventType(); // enum 타입으로 매핑됨
