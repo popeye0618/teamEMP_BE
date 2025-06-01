@@ -75,4 +75,20 @@ public class MedicationController {
     return Response.ok(response).toResponseEntity();
   }
 
+  /**
+   * 복약관리 삭제
+   * @param userDetails 인증된 사용자의 정보
+   * @param eventId 캘린더 이벤트 시퀀스ID
+   * @return 삭제 완료 응답
+   */
+  @DeleteMapping("/{eventId}")
+  public ResponseEntity<Response<Void>> deleteMedication(
+          @AuthenticationPrincipal CustomUserDetails userDetails,
+          @PathVariable Long eventId
+  ) {
+    medicationService.deleteMedication(userDetails, eventId);
+
+    return Response.ok().toResponseEntity();
+  }
+
 }

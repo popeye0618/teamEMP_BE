@@ -32,4 +32,10 @@ public interface MedicationService {
    */
   MedicationManagementResponse updateMedication(CustomUserDetails userDetails, Long eventId, MedicationManagementRequest request);
 
+  /**
+   * 복약관리 삭제
+   * @param userDetails 인증된 사용자의 정보
+   * @param eventId 캘린더 이벤트 시퀀스 ID
+   */
+  void deleteMedication(CustomUserDetails userDetails, Long eventId);
 }

@@ -199,6 +199,34 @@ public class MedicationServiceImpl implements MedicationService{
 
   }
 
+  /**
+   * 복약관리 삭제
+   * @param userDetails 인증된 사용자의 정보
+   * @param eventId 캘린더 이벤트 시퀀스 ID
+   */
+  @Override
+  @Transactional
+  public void deleteMedication(CustomUserDetails userDetails, Long eventId) {
+    try {
+      Member currentMember = securityUtil.getCurrentMember();
+
+      CalendarEvent calendarEvent = findEventByIdAndValidate(eventId, currentMember);
+
+      validateEventType(calendarEvent);
+
+      MedicationManagement medicationManagement = medicationManagementRepository.findByCalendarEvent(calendarEvent)
+              .orElseThrow(() -> new BusinessException(MedicationErrorCode.MEDICATION_NOT_FOUND));
+
+      // 복약관리 삭제 -> 약물과 복약시기도 함께 삭제됨
+      medicationManagementRepository.delete(medicationManagement);
+
+    } catch (BusinessException e) {
+      throw e;
+    } catch (Exception e) {
+      log.error("복약관리 삭제 중 오류 발생", e);
+      throw new BusinessException(MedicationErrorCode.DATABASE_ERROR);
+    }
+  }
 
 
 
