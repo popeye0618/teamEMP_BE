@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import emp.emp.medication.dto.response.FamilyMedicationResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -252,6 +252,43 @@ public class MedicationServiceImpl implements MedicationService{
     }
   }
 
+  /**
+   * 가족 구성원의 공개된 복약관리 조회
+   * @param userDetails 인증된 사용자의 정보
+   * @return 가족 구성원의 공개된 복약관리 목록
+   */
+  @Override
+  @Transactional(readOnly = true)
+  public List<FamilyMedicationResponse> getFamilyMedications(CustomUserDetails userDetails) {
+    try {
+      Member currentMember = securityUtil.getCurrentMember();
+
+      // 가족 정보를 확인
+      if (currentMember.getFamily() == null) {
+        throw new BusinessException(MedicationErrorCode.FAMILY_NOT_FOUND);
+      }
+
+      // 가족 구성원들의 공개된(is_public == true) 복약관리 조회 (본인 제외)
+      List<Member> familyMembers = currentMember.getFamily().getMembers();
+
+      return familyMembers.stream()
+              .filter(member -> !member.getId().equals(currentMember.getId())) // 본인 제외
+              .flatMap(member -> {
+                // 각 가족 구성원의 공개된 복약관리 조회
+                List<MedicationManagement> publicMedications = medicationManagementRepository.findByMemberAndIsPublic(member, true);
+                return publicMedications.stream();
+              })
+              .map(this::convertToFamilyResponse) // 가족용 응답 DTO로!
+              .collect(Collectors.toList());
+
+    } catch (BusinessException e) {
+      throw e;
+    } catch (Exception e) {
+      log.error("가족 복약관리 조회하는데 오류 발생!", e);
+      throw new BusinessException(MedicationErrorCode.DATABASE_ERROR);
+    }
+  }
+
 
 
   // ======================================================
@@ -348,6 +385,51 @@ public class MedicationServiceImpl implements MedicationService{
     if (request.getTimings() == null || request.getTimings().isEmpty()) {
       throw new BusinessException(MedicationErrorCode.TIMING_LIST_EMPTY);
     }
+  }
+
+  /**
+   * MedicationManagement Entity를 FamilyMedicationResponse DTO로 변환
+   * @param medicationManagement 변환할 복약관리 엔티티
+   * @return 변환된 가족용 응답 DTO
+   */
+  private FamilyMedicationResponse convertToFamilyResponse(MedicationManagement medicationManagement) {
+    // 캘린더 이벤트 정보 가져오기
+    CalendarEvent calendarEvent = medicationManagement.getCalendarEvent();
+    Member member = medicationManagement.getMember();
+
+    // 약물 정보 DTO를 리스트로 변환
+    List<MedicationDrugResponse> drugResponses = medicationManagement.getDrugs().stream()
+            .map(drug -> MedicationDrugResponse.builder()
+                    .drugId(drug.getDrugId())
+                    .drugName(drug.getDrugName())
+                    .dosage(drug.getDosage())
+                    .build())
+            .collect(Collectors.toList());
+
+    // 복약 시기 DTO를 리스트로 반환
+    List<MedicationTimingResponse> timingResponses = medicationManagement.getTimings().stream()
+            .map(timing -> MedicationTimingResponse.builder()
+                    .timingId(timing.getTimingId())
+                    .timingType(timing.getTimingType())
+                    .timingDescription(timing.getTimingType().getDescription())
+                    .precaution(timing.getPrecaution())
+                    .build())
+            .collect(Collectors.toList());
+
+    // 가족 공유용 복약관리 응답 DTO 생성 & 반환
+    return FamilyMedicationResponse.builder()
+            .medicationId(medicationManagement.getMedicationId())
+            .eventId(calendarEvent.getEventId())
+            .memberName(member.getUsername()) // 가족 구성원의 이름
+            .diseaseName(medicationManagement.getDiseaseName())
+            .startDate(medicationManagement.getStartDate())
+            .endDate(medicationManagement.getEndDate())
+            .title(calendarEvent.getTitle())
+            .calendarStartDate(calendarEvent.getStartDate())
+            .calendarEndDate(calendarEvent.getEndDate())
+            .drugs(drugResponses)
+            .timings(timingResponses)
+            .build();
   }
 
 }

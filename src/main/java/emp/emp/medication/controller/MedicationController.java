@@ -2,6 +2,7 @@ package emp.emp.medication.controller;
 
 import emp.emp.auth.custom.CustomUserDetails;
 import emp.emp.medication.dto.request.MedicationManagementRequest;
+import emp.emp.medication.dto.response.FamilyMedicationResponse;
 import emp.emp.medication.dto.response.MedicationManagementResponse;
 import emp.emp.medication.service.MedicationService;
 import emp.emp.util.api_response.Response;
@@ -103,6 +104,22 @@ public class MedicationController {
   ) {
     List<MedicationManagementResponse> response = medicationService.getMyMedications(userDetails);
 
+    return Response.ok(response).toResponseEntity();
+  }
+
+  /**
+   * 가족 구성원의 공개된 복약관리 조회
+   * @param userDetails 인증된 사용자 정보
+   * @return 가족 구성원의 공개된 복약관리 목록
+   */
+  @GetMapping("/family")
+  public ResponseEntity<Response<List<FamilyMedicationResponse>>> getFamilyMedications(
+          @AuthenticationPrincipal CustomUserDetails userDetails
+  ) {
+    // 가족 복약관리 조회 서비스 호출
+    List<FamilyMedicationResponse> response = medicationService.getFamilyMedications(userDetails);
+
+    // 성공 응답 반환
     return Response.ok(response).toResponseEntity();
   }
 

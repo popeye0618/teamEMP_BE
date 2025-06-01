@@ -2,6 +2,7 @@ package emp.emp.medication.service;
 
 import emp.emp.auth.custom.CustomUserDetails;
 import emp.emp.medication.dto.request.MedicationManagementRequest;
+import emp.emp.medication.dto.response.FamilyMedicationResponse;
 import emp.emp.medication.dto.response.MedicationManagementResponse;
 import java.util.List;
 
@@ -46,5 +47,12 @@ public interface MedicationService {
    * @return 복약관리 목록
    */
   List<MedicationManagementResponse> getMyMedications(CustomUserDetails userDetails);
+
+  /**
+   * 가족 구성원의 공개된 복약관리 조회
+   * @param userDetails 인증된 사용자의 정보
+   * @return 가족 구성원의 공개된 복약관리 목록
+   */
+  List<FamilyMedicationResponse> getFamilyMedications(CustomUserDetails userDetails);
 
 }
