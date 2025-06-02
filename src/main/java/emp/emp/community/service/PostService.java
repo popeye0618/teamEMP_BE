@@ -34,8 +34,7 @@ public class PostService {
     private final CommentRepository commentRepository;
     private final S3Client s3Client;
 
-
-//    0. 초기화면
+    //    0. 초기화면
     public List<Post> getPosts() {
         return postRepository.findAll();
     }
@@ -105,24 +104,7 @@ public class PostService {
 
 
 
-//    3. 좋아요 누르기
-    public String createOrDeleteLike(Member member, Long postId) {
-        String message = "";
-        Optional<Post> post = postRepository.findById(postId);
-        Optional<Like> like= likeRepository.findByMemberAndPost(member, post.get());
 
-        if (like.isPresent()) { // 좋아요 테이블에 눌렀다는게 존재한다면?
-            likeRepository.delete(like.get());// 좋아요 테이블에서 삭제
-            message = "좋아요 삭제 완료";
-        } else {
-            Like newLike = new Like();
-            newLike.setPost(post.get());
-            newLike.setMember(member);
-            likeRepository.save(newLike); // 안눌렀다면 좋아요 누르기
-            message = "좋아요 추가 성공";
-        }
-        return message;
-    }
 
 
 //    4. 게시글 수정
@@ -137,8 +119,7 @@ public class PostService {
 
 //    6. 카테고리별 글 조회
     public List<Post> getPostsByHealthCategory(HealthCategory healthCategory) {
-        List<Post> posts = postRepository.findByHealthCategory(healthCategory);
-        return posts;
+        return postRepository.findByHealthCategory(healthCategory);
     }
 
 

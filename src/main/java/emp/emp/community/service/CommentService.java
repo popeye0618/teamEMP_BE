@@ -7,16 +7,19 @@ import emp.emp.community.repository.CommentRepository;
 import emp.emp.community.repository.LikeRepository;
 import emp.emp.community.repository.PostRepository;
 import emp.emp.member.entity.Member;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 
 @Service
+@RequiredArgsConstructor
 public class CommentService {
-    private CommentRepository commentRepository;
-    private PostRepository postRepository;
-    private LikeRepository likeRepository;
+    private final CommentRepository commentRepository;
+    private final PostRepository postRepository;
+    private final LikeRepository likeRepository;
+
 
 
     public String registerComment(long postId, Member member, CommentRequest commentRequest) {

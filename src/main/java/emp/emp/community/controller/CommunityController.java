@@ -13,6 +13,7 @@ import emp.emp.community.service.LikeService;
 import emp.emp.community.service.PostService;
 import emp.emp.member.entity.Member;
 import emp.emp.util.security.SecurityUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 public class CommunityController {
 
     private SecurityUtil securityUtil;
@@ -60,7 +62,7 @@ public class CommunityController {
     @PostMapping("/community/{postId}/like")
     public ResponseEntity<String> createOrDeleteLike(@PathVariable Long postId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         Member member = securityUtil.getCurrentMember();
-        String message = postService.createOrDeleteLike(member, postId);
+        String message = likeService.createOrDeleteLike(member, postId);
         return ResponseEntity.ok(message);
     }
 
@@ -115,11 +117,12 @@ public class CommunityController {
 //
 //
 //
-//    // 9. 댓글 삭제
-//    @DeleteMapping("/community/{postId}/comments/{commentId}")
-//    public ResponseEntity<String> deleteComment(@PathVariable Long postId, @PathVariable Long commentId) {
-//        String message = commentService.deleteComment(commentId);
-//    }
+    // 9. 댓글 삭제
+    @DeleteMapping("/community/{postId}/comments/{commentId}")
+    public ResponseEntity<String> deleteComment(@PathVariable Long postId, @PathVariable Long commentId) {
+        String message = commentService.deleteComment(commentId);
+        return ResponseEntity.ok(message);
+    }
 
 
 }
