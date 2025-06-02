@@ -57,4 +57,9 @@ public interface CalendarRepository extends JpaRepository<CalendarEvent, Long> {
    */
   List<CalendarEvent> findByMemberAndStartDateBetweenOrderByPriorityAsc(
           Member member, LocalDateTime start, LocalDateTime end);
+
+
+
+
+
 }

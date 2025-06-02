@@ -3,7 +3,6 @@ package emp.emp.member.entity;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import emp.emp.calendar.entity.CalendarEvent;
@@ -11,9 +10,9 @@ import emp.emp.family.entity.Family;
 import emp.emp.health.entity.Health;
 import emp.emp.health.entity.HealthComment;
 import emp.emp.medical.entity.MedicalResult;
+import emp.emp.medication.entity.MedicationManagement;
 import emp.emp.member.enums.Role;
 import emp.emp.util.BaseEntity;
-import jakarta.persistence.*;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -94,6 +93,12 @@ public class Member extends BaseEntity {
   
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<HealthTag> healthTags = new ArrayList<>();
+
+	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+	private List<CalendarEvent> calendarEvents = new ArrayList<>();
+
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<MedicationManagement> medicationManagements = new ArrayList<>();
 
 	@Builder
 	public Member(String provider, String verifyId, String username, String email, String password, Role role,
