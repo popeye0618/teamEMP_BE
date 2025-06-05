@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import emp.emp.emergency.dto.EmergencyRoomDTO;
 import emp.emp.emergency.dto.*;
 import emp.emp.emergency.dto.UserLocationDTO;
+import emp.emp.health.apiKey.ApiKeyProvider;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -22,6 +23,12 @@ import java.util.List;
 // 서비스 계층에서 받아온 도와 시의 이름으로 xml 데이터를 다시  서비스 계층에 리턴한다
 @Component
 public class EmergencyClient {
+    private final ApiKeyProvider apiKeyProvider;
+
+    public EmergencyClient(ApiKeyProvider apiKeyProvider) {
+        this.apiKeyProvider = apiKeyProvider;
+    }
+
     // 병원의 이름으로 위도경도를 받아오기
 
     // 사용자의 도, 시를 받아오는 메서드
@@ -32,7 +39,7 @@ public class EmergencyClient {
         String sigungu = userLocationDTO.getSigungu();
 
         StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B552657/ErmctInfoInqireService/getEmrrmRltmUsefulSckbdInfoInqire");
-        urlBuilder.append("?" + URLEncoder.encode("serviceKey", "UTF-8") + "=" + "9katrQUAyXDMZdQbJbRGbsPcK5u9PHVP3uyhr5oRBWOhNVYpE2J8TDjxr4eo%2F8qSQzwaa6nxunRdVP14ILSK1A%3D%3D");
+        urlBuilder.append("?" + URLEncoder.encode("serviceKey", "UTF-8") + "=" + apiKeyProvider.getPublicDataKey());
         urlBuilder.append("&" + URLEncoder.encode("STAGE1", "UTF-8") + "=" + URLEncoder.encode(sido, "UTF-8"));
         urlBuilder.append("&" + URLEncoder.encode("STAGE2", "UTF-8") + "=" + URLEncoder.encode(sigungu, "UTF-8"));
         urlBuilder.append("&" + URLEncoder.encode("pageNo", "UTF-8") + "=" + URLEncoder.encode("1", "UTF-8"));
@@ -73,7 +80,7 @@ public class EmergencyClient {
 
     public List<EmergencyAedDTO> GetEmergencyAedInformationApi(UserLocationDTO userLocationDTO) throws IOException {
         StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B552657/AEDInfoInqireService/getEgytAedManageInfoInqire"); /*URL*/
-        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=9katrQUAyXDMZdQbJbRGbsPcK5u9PHVP3uyhr5oRBWOhNVYpE2J8TDjxr4eo%2F8qSQzwaa6nxunRdVP14ILSK1A%3D%3D"); /*Service Key*/
+        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=" + apiKeyProvider.getPublicDataKey()); /*Service Key*/
         urlBuilder.append("&" + URLEncoder.encode("pageNo", "UTF-8") + "=" + URLEncoder.encode("1", "UTF-8"));
         urlBuilder.append("&" + URLEncoder.encode("numOfRows", "UTF-8") + "=" + URLEncoder.encode("10", "UTF-8"));
         urlBuilder.append("&" + URLEncoder.encode("Q0", "UTF-8") + "=" + URLEncoder.encode(userLocationDTO.getSido(), "UTF-8"));
@@ -114,7 +121,7 @@ public class EmergencyClient {
         );
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "KakaoAK " + "8113bbd87134d0a61a186d59e72a4032");
+        headers.set("Authorization", "KakaoAK " + apiKeyProvider.getKakaoMapKey());
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
@@ -161,8 +168,8 @@ public class EmergencyClient {
     }
 
 
-    public static EmergencyRoomDTO GetEmergencyRoomLocation(EmergencyRoomDTO emergencyRoom) {
-        final String KAKAO_API_KEY = "8113bbd87134d0a61a186d59e72a4032";
+    public EmergencyRoomDTO GetEmergencyRoomLocation(EmergencyRoomDTO emergencyRoom) {
+        final String KAKAO_API_KEY = apiKeyProvider.getKakaoMapKey();
         try {
             String query = emergencyRoom.getHospitalName(); // 병원 이름
             String encodedQuery = URLEncoder.encode(query, "UTF-8");
