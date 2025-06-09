@@ -5,6 +5,7 @@ import emp.emp.calendar.enums.CalendarEventType;
 import emp.emp.medical.entity.MedicalResult;
 import emp.emp.medication.entity.MedicationManagement;
 import emp.emp.member.entity.Member;
+import emp.emp.treatmentSchedule.entity.TreatmentSchedule;
 import emp.emp.util.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -38,6 +39,9 @@ public class CalendarEvent extends BaseEntity {
   private LocalDateTime endDate;
 
   private Integer priority;
+
+  @OneToOne(mappedBy = "calendarEvent", cascade = CascadeType.ALL, orphanRemoval = true)
+  private TreatmentSchedule treatmentSchedule;
 
   // 진료결과와 일대일 관계
   @OneToOne(mappedBy = "calendarEvent", cascade = CascadeType.ALL, orphanRemoval = true)

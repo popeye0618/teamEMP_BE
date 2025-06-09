@@ -32,13 +32,13 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
 	private static final List<String> CORS_WHITELIST = List.of(
-		"http://localhost:5173"
+					"http://localhost:5173"
 	);
 	private static final List<String> WHITELIST = List.of(
-		"/login",
-		"/api/register",
-		"/api/login",
-		"/api/token/**"
+					"/login",
+					"/api/register",
+					"/api/login",
+					"/api/token/**"
 //		"/api/emergency/**"
 	);
 
@@ -51,35 +51,35 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 		http
-			.csrf(AbstractHttpConfigurer::disable)
-			.formLogin(AbstractHttpConfigurer::disable)
-			.httpBasic(AbstractHttpConfigurer::disable);
+						.csrf(AbstractHttpConfigurer::disable)
+						.formLogin(AbstractHttpConfigurer::disable)
+						.httpBasic(AbstractHttpConfigurer::disable);
 
 		http
-			.oauth2Login(oauth2 -> oauth2
-				.userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
-					.userService(customOAuth2UserService))
-				.successHandler(oAuth2SuccessHandler)
-				.failureHandler(oAuth2FailureHandler)
-			);
+						.oauth2Login(oauth2 -> oauth2
+										.userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
+														.userService(customOAuth2UserService))
+										.successHandler(oAuth2SuccessHandler)
+										.failureHandler(oAuth2FailureHandler)
+						);
 
 		http
-			.authorizeHttpRequests(auth -> auth
-				.requestMatchers(WHITELIST.toArray(new String[0])).permitAll()
-				.requestMatchers("/api/auth/semi/**").hasRole("SEMI_USER")
-				.requestMatchers("/api/auth/user/**").hasRole("USER")
-				.anyRequest().authenticated()
-			);
+						.authorizeHttpRequests(auth -> auth
+										.requestMatchers(WHITELIST.toArray(new String[0])).permitAll()
+										.requestMatchers("/api/auth/semi/**").hasRole("SEMI_USER")
+										.requestMatchers("/api/auth/user/**").hasRole("USER")
+										.anyRequest().authenticated()
+						);
 
 		http
-			.addFilterBefore(new JwtFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+						.addFilterBefore(new JwtFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
 		http
-			.sessionManagement((session) -> session
-				.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
+						.sessionManagement((session) -> session
+										.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
 
 		http
-			.cors(corsCustomizer -> corsCustomizer.configurationSource(corsConfigurationSource()));
+						.cors(corsCustomizer -> corsCustomizer.configurationSource(corsConfigurationSource()));
 
 		return http.build();
 	}
