@@ -23,7 +23,7 @@ public class TreatmentSchedule extends BaseEntity {
   @Column(name = "treatment_id")
   private Long treatmentId; // 진료일정 시퀀스ID
 
-  @ManyToOne
+  @OneToOne
   @JoinColumn(name = "event_id")
   private CalendarEvent calendarEvent;  // 연결된 캘린더 이벤트
 
